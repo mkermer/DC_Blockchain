@@ -12,6 +12,8 @@ router.route('/').get(async (req, res) => {
 
 
 router.route('/add').post(async (req, res) => {
+    console.log(req.body)
+
     const id = Number(req.body.id);
     const hash = req.body.hash;
     const previousHash = req.body.previousHash;
