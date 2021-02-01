@@ -109,7 +109,7 @@ setInterval(() => {
 
     myfunc()
 
-}, 10000)
+}, 60000)
 
 
 app.listen(port, () => {
