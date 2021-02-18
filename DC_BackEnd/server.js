@@ -75,6 +75,49 @@ app.post("/blocks/update", async (req, res) => {
     console.log('###############################')
 });
 
+//Merkle tree - function that should receive an array
+
+
+//Merkle tree for even number of elements
+const merkleTreeHash = (a) => {
+    console.log(a)
+    let b = []
+    if (a.length == 0) {
+        console.log(SHA256('0').toString());
+        return SHA256('0').toString();
+    }
+    else if (a.length == 1) {
+        console.log(a[0])
+        return a[0]
+    }
+    else if (a.length % 2 != 0) {
+        for (let i = 0; i < a.length - 1; i += 2) {
+            if (a.length - i > 3) {
+                b.push(SHA256(a[i] + a[i + 1]).toString())
+            } else {
+                b.push(SHA256(a[i] + a[i + 1]).toString())
+                b.push(SHA256(a[i + 2]).toString())
+                console.log(b)
+            }
+        }
+        return merkleTreeHash(b)
+    }
+    else if (a.length == 2) {
+        console.log(a)
+        console.log(b)
+        console.log(SHA256(a[0] + a[1]).toString())
+        b.push(SHA256(a[0] + a[1]).toString())
+        return merkleTreeHash(b)
+    } else {
+        for (let i = 0; i < a.length; i += 2) {
+            b.push(SHA256(a[i] + a[i + 1]).toString())
+        }
+        console.log(b)
+        return merkleTreeHash(b)
+    }
+}
+
+
 // Create block - search for previous blockto get lats block number
 // Create hash, timestamp and merkle tree for new block
 // when 10 min are over this data is compiled and sent for saving
@@ -84,10 +127,16 @@ app.post("/blocks/update", async (req, res) => {
 setInterval(() => {
     console.log('---- START - setInterval ----')
 
+    const transMerkleTree = merkleTreeHash(transA)
+    console.log(transMerkleTree)
     transB = [...transA];
     transA = [];
+    console.log('Switch in transactions is over')
 
     const myfunc = async () => {
+
+        const currentTimestamp = new Date().getTime();
+        console.log(currentTimestamp);
 
         const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }])
         const maxBlockID = await (block[0].id + 1)
@@ -98,7 +147,7 @@ setInterval(() => {
             hash: 'test',
             previousHash: 'tes',
             nonce: Number(1),
-            timestamp: Date.parse('2020-02-01T23:00:00.000Z'),
+            timestamp: currentTimestamp,
             transactions: transB
         }
 
@@ -109,7 +158,7 @@ setInterval(() => {
 
     myfunc()
 
-}, 60000)
+}, 10000)
 
 
 app.listen(port, () => {
