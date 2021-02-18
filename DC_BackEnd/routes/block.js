@@ -12,6 +12,9 @@ router.route('/').get(async (req, res) => {
 
 
 router.route('/add').post(async (req, res) => {
+    console.log("#### Path: 'block/add', ")
+    console.log(req.body)
+
     const id = Number(req.body.id);
     const hash = req.body.hash;
     const previousHash = req.body.previousHash;
@@ -36,7 +39,11 @@ router.route('/add').post(async (req, res) => {
     }
 })
 
-router.route('/update/:id').post((req, res) => {
+/* router.route('/update/:id').post((req, res) => {
+
+    console.log("#### /update/:id, ")
+
+
     Block.findById(req.params.id)
         .then(block => {
             block.id = req.body.id;
@@ -49,8 +56,11 @@ router.route('/update/:id').post((req, res) => {
 
             block.save()
                 .then(() => res.json(block))
+                .then(() => console.group(block))
                 .catch(err => res.status(400).json('Error: ' + err));
         })
         .catch(err => res.status(400).json('Error: ' + err));
-});
+
+}); */
+
 module.exports = router; 

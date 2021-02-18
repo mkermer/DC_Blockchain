@@ -95,12 +95,12 @@ class Account extends Component {
                 previousHash: this.props.applicationState.block.previousHash,
                 nonce: this.props.applicationState.block.nonce,
                 timestamp: this.props.applicationState.block.timestamp,
-                transactions: this.state.transactions
+                transaction: this.state.transaction
             }
             console.log(block);
-            const transres = await axios.post(`http://localhost:4000/blocks/update/${this.props.applicationState.block._id}`, block);
-            console.log(transres.data);
 
+            const transres = await axios.post(`http://localhost:4000/blocks/update`, this.state.transaction);
+            console.log(transres.data);
 
         }
         catch (err) {
