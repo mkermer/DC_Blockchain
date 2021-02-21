@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
@@ -7,153 +7,191 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../actions/app.action';
 import axios from 'axios';
+import { io } from "socket.io-client";
+import SHA256 from 'crypto-js/sha256';
 
 
+function Account(props) {
 
-class Account extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            balance: this.props.applicationState.user.balance,
-            toAddressInput: "",
-            amount: 0,
-            fromAddressInput: "",//should be fetched from API
-            variant: "success",
-            hash: "",
-            timestamp: "",
-            showSuccess: false,
-            text: "",
-            transaction: {
-                toAddress: "",
-                fromAdress: this.props.applicationState.user.publicKey,
-                amount: 0
-            },
-            transactions: []
+    const [balance, setBalance] = useState(props.applicationState.user.balance);
+
+    const [toAddressInput, setToAddressInput] = useState("");
+    const [amount, setAmount] = useState(0);
+    const [fromAddressInput, setFromAddressInput] = useState(props.applicationState.user.publicKey);
+
+    const [variant, setVariant] = useState("success");
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [text, setText] = useState("");
+
+    const [trig, setTrig] = useState(false)
+
+    const [miningData, setMiningData] = useState(
+        {
+            merkleHash: '',
+            blockID: 0,
+            maxBlockID: 0,
+            previousBlockHash: '',
+            previousBlockNonce: 0,
+            timestamp: 0,
+            difficultyHash: '09'
         }
+    )
 
-    }
-
-    componentDidMount = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/blocks');
-            const blocks = response.data
-            var latestBlock = blocks.reduce(function (prev, current) {
-                if (+current.id > +prev.id) {
-                    return current;
-                } else {
-                    return prev;
-                }
-            });
-            console.log(latestBlock);
-            this.props.actions.storeLatestBlockData(latestBlock);
-            this.setState({
-                transactions: this.props.applicationState.block.transactions
-            }, () => {
-                console.log(this.state.transactions)
-            })
-
-
-
-        } catch (err) {
-            console.log(err);
+    // Should contain data: userpublic key, hash, nonce
+    const [foundHash, setFoundHash] = useState(
+        {
+            userPublicKey: '',
+            hash: '',
+            nonce: 0
         }
-    }
+    )
 
-    setAddressInput = (e) => {
-        const transaction = { ...this.state.transaction }
-        transaction.toAddress = e.target.value;
-        this.setState({
-            transaction
-        })
-    }
-
-    setAmountInput = (e) => {
-        const transaction = { ...this.state.transaction }
-        transaction.amount = e.target.value;
-        this.setState({
-            transaction
-        })
-    }
-
-    setTransactionState = () => {
-        this.setState({
-            transactions: [...this.state.transactions, this.state.transaction]
-        }, () => {
-            console.log(this.state.transactions)
-        })
-    }
-
-
-    signTransaction = async () => {
-
-        this.setTransactionState();
-
+    const signTransaction = async () => {
         try {
-            const block = {
-                id: this.props.applicationState.block.id,
-                hash: this.props.applicationState.block.hash,
-                previousHash: this.props.applicationState.block.previousHash,
-                nonce: this.props.applicationState.block.nonce,
-                timestamp: this.props.applicationState.block.timestamp,
-                transaction: this.state.transaction
+            const thisTransaction = {
+                toAddress: toAddressInput,
+                fromAdress: fromAddressInput,
+                amount: amount
             }
-            console.log(block);
-
-            const transres = await axios.post(`http://localhost:4000/blocks/update`, this.state.transaction);
+            console.log(thisTransaction);
+            const transres = await axios.post(`http://localhost:4000/blocks/update`, thisTransaction);
             console.log(transres.data);
-
         }
         catch (err) {
             console.log('Error: ' + err)
         }
-
-
-        // })
-
-
     }
 
+    const SERVER = "http://localhost:4000";
+    const socket = io(SERVER);
 
+    useEffect(() => {
+        console.log('Interval')
 
+        socket.on('connect', () => {
+            console.log(`I'm connected with the back-end`);
+        });
 
-    //ComponentDidMount to display the transaction history
-    render() {
-        return (
-            <div>
-                <h1>Your balance: {this.state.balance}</h1>
-                <Alert variant={this.state.variant} show={this.state.showSuccess}>
-                    {this.state.text}
-                </Alert>
-                <Form>
-                    <Form.Group controlId="email">
-                        <Form.Label>From address:<span>*</span></Form.Label>
-                        <Form.Control placeholder={this.props.applicationState.user.publicKey} value={this.props.applicationState.user.publicKey}
-                            onChange={this.setFromAddressInput} type="text" required />
-                        <Form.Text className="text-muted">
-                            Thos is your wallet address <strong>You cannot change it, because you can only spend your own coins</strong>
+        socket.on("sendDataForMining", (arg) => {
+            console.log(arg);
+            setMiningData(arg)
+        });
+
+        socket.off('connect', () => {
+            console.log(`I'm connected with the back-end`);
+        });
+    }, [])
+
+    useEffect(() => {
+        if (!!foundHash.hash && !!foundHash.userPublicKey) {
+            console.log('Send Hash: ')
+            console.log(foundHash)
+            socket.emit("sendHash", foundHash);
+            console.log('The hash was sent')
+        }
+    }, [foundHash])
+
+    useEffect(() => {
+
+        console.log(trig)
+        if (trig) {
+            console.log('Initiate mining...')
+            //Perform calculaptions for the hash
+            console.log('Mining Data: ')
+            console.log(miningData)
+
+            let nonce = 0;
+            let control = 0;
+            if (!!miningData.timestamp) {
+                while (!control) {
+                    const tHash = SHA256(
+                        miningData.merkleHash
+                        + miningData.blockID
+                        + miningData.previousBlockHash
+                        + miningData.previousBlockNonce
+                        + miningData.timestamp
+                        + nonce).toString();
+                    if (miningData.difficultyHash > tHash) {
+                        console.log(tHash)
+                        console.log(miningData.difficultyHash > tHash)
+                        console.log(nonce)
+                        control = 1;
+
+                        setFoundHash({
+                            userPublicKey: fromAddressInput,
+                            hash: tHash,
+                            nonce: nonce
+                        })
+                    }
+                    nonce += 1
+                }
+            }
+            console.log('End mining...')
+        }
+    }, [miningData, trig])
+
+    // MISSING:
+    //   1 - Display the transaction history
+    //   2 - Display balance by doing a http request that updates every 10-60 sec
+
+    return (
+        <div>
+            <h1>Your balance: {balance}</h1>
+            <Alert variant={variant} show={showSuccess}>
+                {text}
+            </Alert>
+            <Form>
+                <Form.Group controlId="email">
+                    <Form.Label>From address:<span>*</span></Form.Label>
+                    <Form.Control placeholder={fromAddressInput} value={fromAddressInput}
+                        type="text" required />
+                    <Form.Text className="text-muted">
+                        Thos is your wallet address <strong>You cannot change it, because you can only spend your own coins</strong>
+                    </Form.Text>
+                </Form.Group>
+                <Form.Group controlId="textarea">
+                    <Form.Label>To address<span>*</span></Form.Label>
+                    <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
+                    <Form.Text className="text-muted">
+                        The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
+                    </Form.Text>
+                </Form.Group>
+                <Form.Group controlId="textarea">
+                    <Form.Label>Amount<span>*</span></Form.Label>
+                    <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                    <Form.Text className="text-muted">
+                        Amount of money, you would like to send!
                         </Form.Text>
-                    </Form.Group>
-                    <Form.Group controlId="textarea">
-                        <Form.Label>To address<span>*</span></Form.Label>
-                        <Form.Control value={this.state.transaction.toAddress} onChange={this.setAddressInput} required />
-                        <Form.Text className="text-muted">
-                            The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
-                        </Form.Text>
-                    </Form.Group>
-                    <Form.Group controlId="textarea">
-                        <Form.Label>Amount<span>*</span></Form.Label>
-                        <Form.Control value={this.state.transaction.amount} onChange={this.setAmountInput} required />
-                        <Form.Text className="text-muted">
-                            Amount of money, you would like to send!
-                        </Form.Text>
-                    </Form.Group>
-                    <Button onClick={this.signTransaction}>Create transaction</Button>
-                </Form>
-            </div>
-        )
-
-
-    }
+                </Form.Group>
+                <Button onClick={signTransaction}>Create transaction</Button>
+            </Form>
+            <br />
+            <br />
+            <h4>Minning</h4>
+            <br />
+            <h5>Options</h5>
+            <Form>
+                <Form.Group controlId="nonceOption">
+                    <Form.Label>Starting value for the nonce:(needs to be implemnted all his option)<span>*</span></Form.Label>
+                    <Form.Control placeholder='Need to think' value={0}
+                        type="text" required />
+                    <Form.Text className="text-muted">
+                        Type a number to <strong>start mining</strong>
+                    </Form.Text>
+                </Form.Group>
+                <Button >Random number</Button>
+                <br />
+                <br />
+                <Button >Each iteration a random number</Button>
+                <br />
+                <br />
+                <Button >Save options</Button>
+            </Form>
+            <br />
+            <h5>Do you want to mine?</h5>
+            <Button onClick={() => setTrig(!trig)} >Mine</Button>
+        </div>
+    )
 }
 
 const mapStateToProps = state => ({ applicationState: state });
