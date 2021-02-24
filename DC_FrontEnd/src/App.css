@@ -33,3 +33,26 @@ h1, h2 , h3, .audiowide{
     to{-webkit-transform: rotateY(360deg);}
    }
    
+
+.gold{
+    color: #F3CC6D !important;
+}
+
+.silver{
+    color: #D5D3CA !important;
+}
+
+.btn-outline-light{
+    border-color: #D5D3CA;
+    color: #D5D3CA;
+}
+
+.btn-outline-light:hover,
+.btn-outline-light:active, 
+.btn-outline-light:link, 
+.btn-outline-light:focus
+.btn-outline-light:visited {
+    background-color: #D5D3CA;
+    border-color: #D5D3CA;
+    color: #343a40;
+}

@@ -1,0 +1,34 @@
+.dropdown button{
+    background-color: #D5D3CA;
+    border-color: #D5D3CA;
+    color: #343a40;
+}
+
+.dropdown button:hover,
+.dropdown button:active, 
+.dropdown button:link, 
+.dropdown button:focus
+.dropdown button:visited {
+    background-color: #D5D3CA;
+    border-color: #D5D3CA;
+    color: #343a40;
+}
+
+@media (min-width: 768px){
+    .button-text1:before{
+        content: "Create Account ";
+    }
+}
+
+@media (min-width: 768px){
+    .button-text2:before{
+        content: "Login ";
+    }
+}
+
+@media (min-width: 769px){
+    .navbar-expand-md{
+        
+        justify-content: space-between !important;
+    }
+}

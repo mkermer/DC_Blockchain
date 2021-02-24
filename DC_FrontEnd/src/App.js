@@ -17,7 +17,8 @@ function App() {
         <NavbarDC />
 
       <Container>
-        <Route path="/" exact component={Dashboard} />
+        <Route path="/" exact component={Dashboard} /> 
+        {/* change path */}
         <Route path="/registerKeys" component={CreateKeys} />
         <Route path="/login" component={Login} />
         <Route path="/account" component={Account} />
