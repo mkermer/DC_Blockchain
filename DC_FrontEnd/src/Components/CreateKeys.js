@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap';
-import Alert from 'react-bootstrap/Alert'
+import { Button, Alert } from 'react-bootstrap';
 import User from './class';
 import BlockchainAPI from './BlockchainAPI';
 import axios from 'axios';
 import './CreateKeys.css';
 import { Link } from 'react-router-dom';
+
 class CreateKeys extends Component {
 
     constructor(props) {

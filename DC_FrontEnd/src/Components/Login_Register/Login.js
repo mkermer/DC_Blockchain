@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/app.action';
+import * as actions from '../../actions/app.action';
 
 class Login extends Component {
 

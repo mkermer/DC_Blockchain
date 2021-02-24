@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 // import { EC } from 'elliptic';
-import { Button } from 'react-bootstrap';
-import Alert from 'react-bootstrap/Alert'
+import { Button, Alert } from 'react-bootstrap';
 import User from './class';
 import Login from './Login';
 
