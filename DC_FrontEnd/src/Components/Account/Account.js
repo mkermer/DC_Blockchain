@@ -5,7 +5,7 @@ import Alert from 'react-bootstrap/Alert'
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/app.action';
+import * as actions from '../../actions/app.action';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';

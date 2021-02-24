@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Alert } from 'react-bootstrap';
-import User from './class';
-import BlockchainAPI from './BlockchainAPI';
+import User from '../class';
+import BlockchainAPI from '../BlockchainAPI';
 import axios from 'axios';
 import './CreateKeys.css';
 import { Link } from 'react-router-dom';
