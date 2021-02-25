@@ -39,7 +39,9 @@ class NavbarDC extends Component {
                 </Navbar.Collapse>
 
                 
-                <DropdownButton id="dropdown-basic-button" className="silver-background" variant="light" title="User">
+                <DropdownButton  id="dropdown-button-drop-left" drop="left" className="silver-background"  key="left" variant="light" title="User">
+                
+
                     <Dropdown.Item href="/account">Account</Dropdown.Item>
                     <Dropdown.Item href="/">Dashboard</Dropdown.Item>
                     <Dropdown.Item href="/" style={{color:"red"}}>Logout</Dropdown.Item>

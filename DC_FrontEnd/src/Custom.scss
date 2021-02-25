@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
+$theme-colors: (
+    "light": transparent
+);
+
 h1, h2 , h3, .audiowide{
     font-family: 'Audiowide', cursive;
     margin: 0 !important;
