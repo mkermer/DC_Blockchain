@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, ListGroup, Row, Col } from 'react-bootstrap';
+import { Button, Card, ListGroup, Row, Col, Form } from 'react-bootstrap';
 import './Dashboard.css'
 import axios from 'axios';
 import Cube from './Cube';
+import Moment from 'react-moment';
 
 
 const Dashboard = (props) => {
@@ -81,21 +82,24 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>{block.timestamp}</p>
+                                                <p><Moment format="MMMM Do YYYY, h:mm:ss a">{block.timestamp}</Moment></p>
                                             </Col>
                                         </Row>
                                     </>;
                 let contentBottom = <> <p>Hello</p> </>;
                 
                 return (
-                <Cube 
-                    front={contentFront}
-                    right={contentRight}
-                    back={contentBack}
-                    left={contentLeft}
-                    top={contentTop}
-                    bottom={contentBottom}
-                />
+                    <>
+                        
+                        <Cube 
+                            front={contentFront}
+                            right={contentRight}
+                            back={contentBack}
+                            left={contentLeft}
+                            top={contentTop}
+                            bottom={contentBottom}
+                        />
+                    </>
                 // <Card style={{ width: '18rem' }}>
                 //     <Card.Header><h2>{`Block ${block.id}`}</h2></Card.Header>
                 //     <ListGroup variant="flush">
