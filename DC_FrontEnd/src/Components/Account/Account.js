@@ -54,10 +54,12 @@ function Account(props) {
                 amount: amount
 
             }
-            setTransaction(thisTransaction)
+
             console.log(thisTransaction);
             const transres = await axios.post(`http://localhost:4000/blocks/update/${fromAddressInput}`, thisTransaction);
             console.log(transres.data);
+            const trans = transres.data;
+            setBalance(trans.balance);
         }
         catch (err) {
             console.log('Error: ' + err)
@@ -135,6 +137,14 @@ function Account(props) {
 
     // MISSING:
     //   1 - Display the transaction history
+    useEffect(() => {
+        getTransactions();
+    }, [])
+
+    const getTransactions = async () => {
+        const response = await axios.get(`http://localhost:4000/users/getTransactions/${fromAddressInput}`)
+        console.log(response.data);
+    }
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
     return (
