@@ -9,21 +9,43 @@ import Moment from 'react-moment';
 const Dashboard = (props) => {
     const [blocks, setBlocks] = useState([]);
 
+
     useEffect(() => {
         getBlocks();
     }, [])
 
     const getBlocks = async () => {
-        const response = await axios.get('http://localhost:4000/blocks/getBlocks');
+        const response = await axios.get('http:localhost:4000/blocks/getBlocks');
         console.log(response.data);
         setBlocks(response.data);
     }
 
+
+
     return (
-        <div>
+        <div className="Dashboard">
             
-            <h1>Blocks on DC chain</h1>
-            <p> The latest 5 blocks on the chain: </p>
+            <h1>Latest 5 Blocks on DC chain</h1>
+            
+                <h4>Select View:</h4>
+                    <input type="radio" id="a" label="Front" name="side" />
+                    <label for="a">Block</label>
+                    <input type="radio" id="b" label="Front" name="side"/>
+                    <label for="b">Hash</label>
+                    <input type="radio" id="c" label="Front" name="side"/>
+                    <label for="c">Hash of previous Block</label>
+                    <input type="radio" id="d" label="Front" name="side"/>
+                    <label for="d">Nonce</label>
+                    <input type="radio" id="e" label="Front" name="side"/>
+                    <label for="e">Timestamp</label>
+                    <input type="radio" id="f" label="Front" name="side"/>
+                    <label for="f">Bottom</label>
+
+                <h4>Or:</h4>
+                
+                
+            <Row>
+
             {blocks.map(block => {
                 let contentFront =  <>
                                         <Row>
@@ -33,7 +55,7 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>{block.id}</p>
+                                                <p className="value">{block.id}</p>
                                             </Col>
                                         </Row>
                                     </>;
@@ -45,19 +67,19 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>{block.hash}</p>
+                                                <p className="value">{block.hash}</p>
                                             </Col>
                                         </Row>
                                     </>;
                 let contentBack =   <>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>Hash of previous Block</p>
+                                                <p>Previous Hash</p>
                                             </Col>
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>{block.previousHash}</p>
+                                                <p className="value">{block.previousHash}</p>
                                             </Col>
                                         </Row>
                                     </>;
@@ -70,7 +92,7 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p>{block.nonce}</p>
+                                                <p className="value">{block.nonce}</p>
                                             </Col>
                                         </Row>
                                     </>;
@@ -82,15 +104,14 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p><Moment format="MMMM Do YYYY, h:mm:ss a">{block.timestamp}</Moment></p>
+                                                <p><Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment></p>
                                             </Col>
                                         </Row>
                                     </>;
                 let contentBottom = <> <p>Hello</p> </>;
                 
                 return (
-                    <>
-                        
+                        <Col md={6}>
                         <Cube 
                             front={contentFront}
                             right={contentRight}
@@ -99,34 +120,16 @@ const Dashboard = (props) => {
                             top={contentTop}
                             bottom={contentBottom}
                         />
-                    </>
-                // <Card style={{ width: '18rem' }}>
-                //     <Card.Header><h2>{`Block ${block.id}`}</h2></Card.Header>
-                //     <ListGroup variant="flush">
-                //         <ListGroup.Item>
-                //             <h4>Hash</h4>
-                //             <br />
-                //             {block.hash}
-                //         </ListGroup.Item>
-                //         <ListGroup.Item>
-                //             <h4>Hash of previous Block</h4>
-                //             <br />
-                //             {block.previousHash}
-                //         </ListGroup.Item>
-                //         <ListGroup.Item>
-                //             <h4>Nonce</h4>
-                //             <br />
-                //             {block.nonce}
-                //         </ListGroup.Item>
-                //         <ListGroup.Item>
-                //             <h4>Timestamp</h4>
-                //             <br />
-                //             {block.timestamp}
-                //         </ListGroup.Item>
-                //     </ListGroup>
-                // </Card>
+                        
+                        </Col>
                 )
             })}
+            </Row>
+
+            
+        
+
+    
 
         </div>
     )

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
 h1, h2 , h3, .audiowide{
     font-family: 'Audiowide', cursive;
@@ -57,6 +57,11 @@ h1{
     color: #D5D3CA !important;
 }
 
+.btn-primary {
+    border-color: #D5D3CA;
+    color: #D5D3CA;
+}
+
 .btn-outline-light{
     border-color: #D5D3CA;
     color: #D5D3CA;
@@ -70,4 +75,4 @@ h1{
     background-color: #D5D3CA;
     border-color: #D5D3CA;
     color: #343a40;
-}
+} */
