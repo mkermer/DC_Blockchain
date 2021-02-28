@@ -22,7 +22,7 @@ function Account(props) {
     const [variant, setVariant] = useState("success");
     const [showSuccess, setShowSuccess] = useState(false);
     const [text, setText] = useState("");
-    const [transaction, setTransaction] = useState({});
+    const [transactions, setTransaction] = useState([]);
     const [trig, setTrig] = useState(false)
 
     const [miningData, setMiningData] = useState(
@@ -60,6 +60,8 @@ function Account(props) {
             console.log(transres.data);
             const trans = transres.data;
             setBalance(trans.balance);
+            console.log(transactions)
+            // window.location.reload()
         }
         catch (err) {
             console.log('Error: ' + err)
@@ -139,11 +141,12 @@ function Account(props) {
     //   1 - Display the transaction history
     useEffect(() => {
         getTransactions();
-    }, [])
+    }, [setTransaction])
 
     const getTransactions = async () => {
         const response = await axios.get(`http://localhost:4000/users/getTransactions/${fromAddressInput}`)
-        console.log(response.data);
+        // console.log(response.data);
+        setTransaction(response.data)
     }
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
@@ -203,6 +206,32 @@ function Account(props) {
             <br />
             <h5>Do you want to mine?</h5>
             <Button onClick={() => setTrig(!trig)} >Mine</Button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Amount</th>
+                        <th>Hash</th>
+                        <th>Timestamp</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {transactions.map(transaction => {
+                        return (
+                            <tr>
+                                <td>{transaction.fromAdress}</td>
+                                <td>{transaction.toAdress}</td>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction.hash}</td>
+                                <td>{transaction.timestamp}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
         </div>
     )
 }

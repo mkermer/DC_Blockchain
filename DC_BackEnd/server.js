@@ -86,69 +86,75 @@ app.post("/blocks/update/:address", async (req, res) => {
     console.log('############################### New transaction')
     const publicAddress = req.params.address;
     const amount = parseInt(req.body.amount, 10);;
-    const users = await User.find();
+    try {
+        const users = await User.find();
 
-    let withdrawUser = "";
-    for (var i = 0; i < users.length; i++) {
-        if (users[i].publicKey === req.body.fromAdress) {
-            withdrawUser = users[i];
+        let withdrawUser = "";
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].publicKey === req.body.fromAdress) {
+                withdrawUser = users[i];
+            }
         }
-    }
 
-    let withdrawBalance = withdrawUser.balance;
+        let withdrawBalance = withdrawUser.balance;
 
-    let depositUser = "";
-    for (var i = 0; i < users.length; i++) {
-        if (users[i].publicKey === req.body.toAddress) {
-            depositUser = users[i]
+        let depositUser = "";
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].publicKey === req.body.toAddress) {
+                depositUser = users[i]
+            }
         }
+
+        let depositBalance = depositUser.balance;
+
+        // calculate 
+        if (amount > withdrawBalance) {
+            res.json('invalid transaction');
+        } else {
+            withdrawBalance = withdrawBalance - amount;
+            depositBalance = depositBalance + amount;
+        }
+
+        User.findById(withdrawUser._id)
+            .then(user => {
+                user.publicKey = withdrawUser.publicKey;
+                user.privateKey = withdrawUser.privateKey;
+                user.balance = withdrawBalance;
+
+
+                user.save()
+                    .then(() => res.json(user))
+                    .catch(err => res.status(400).json('Error: ' + err));
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+
+
+        User.findById(depositUser._id)
+            .then(user => {
+                user.publicKey = depositUser.publicKey;
+                user.privateKey = depositUser.privateKey;
+                user.balance = depositBalance;
+
+
+                user.save()
+
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+
+
+        const timestampNow = Date.now()
+        const tHash = SHA256(req.body.toAddress + req.body.fromAdress + req.body.amount + timestampNow).toString();
+        const newTrans = { ...req.body, hash: tHash, timestamp: timestampNow }
+        console.log(newTrans)
+        transA = [...transA, newTrans]
+        transAHashes = [...transAHashes, tHash]
+        res.status(200)
+        res.json(withdrawUser)
+
+
+    } catch (err) {
+        console.log(err)
     }
-
-    let depositBalance = depositUser.balance;
-
-    // calculate 
-    if (amount > withdrawBalance) {
-        res.json('invalid transaction');
-    } else {
-        withdrawBalance = withdrawBalance - amount;
-        depositBalance = depositBalance + amount;
-    }
-
-    User.findById(withdrawUser._id)
-        .then(user => {
-            user.publicKey = withdrawUser.publicKey;
-            user.privateKey = withdrawUser.privateKey;
-            user.balance = withdrawBalance;
-
-
-            user.save()
-                .then(() => res.json(user))
-                .catch(err => res.status(400).json('Error: ' + err));
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
-
-
-    User.findById(depositUser._id)
-        .then(user => {
-            user.publicKey = depositUser.publicKey;
-            user.privateKey = depositUser.privateKey;
-            user.balance = depositBalance;
-
-
-            user.save()
-
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
-
-
-    const timestampNow = Date.now()
-    const tHash = SHA256(req.body.toAddress + req.body.fromAdress + req.body.amount + timestampNow).toString();
-    const newTrans = { ...req.body, hash: tHash, timestamp: timestampNow }
-    console.log(newTrans)
-    transA = [...transA, newTrans]
-    transAHashes = [...transAHashes, tHash]
-    res.status(200)
-
 
 
     console.log('###############################')
