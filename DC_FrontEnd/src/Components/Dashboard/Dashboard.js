@@ -4,11 +4,12 @@ import './Dashboard.css'
 import axios from 'axios';
 import Cube from './Cube';
 import Moment from 'react-moment';
+import DisplayTransactionsOfBlock from './transactionsOfBlock';
 
 
 const Dashboard = (props) => {
     const [blocks, setBlocks] = useState([]);
-
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         getBlocks();
@@ -18,6 +19,10 @@ const Dashboard = (props) => {
         const response = await axios.get('http://localhost:4000/blocks/getBlocks');
         console.log(response.data);
         setBlocks(response.data);
+    }
+
+    const showTransactions = () => {
+        setShow(true)
     }
 
 
