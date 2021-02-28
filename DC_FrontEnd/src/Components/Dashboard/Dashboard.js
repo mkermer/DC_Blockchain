@@ -42,7 +42,7 @@ const Dashboard = (props) => {
                     <label for="f">Bottom</label>
 
                 <h4>Or:</h4>
-                <Button >Change to Easy View</Button>
+                
                 
             <Row>
 
