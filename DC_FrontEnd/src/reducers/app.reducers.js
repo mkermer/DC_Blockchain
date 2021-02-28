@@ -1,4 +1,4 @@
-import { STORE_USER_DATA, STORE_LATESTBLOCK_DATA } from '../actions/app.action';
+import { STORE_USER_DATA, STORE_LATESTBLOCK_DATA, RESET_REDUX } from '../actions/app.action';
 
 const initialState = {
     user: false,
