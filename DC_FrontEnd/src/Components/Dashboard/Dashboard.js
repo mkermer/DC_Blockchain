@@ -42,7 +42,7 @@ const Dashboard = (props) => {
                     <label for="f">Bottom</label>
 
                 <h4>Or:</h4>
-                
+                <Button >Change to Easy View</Button>
                 
             <Row>
 
@@ -111,6 +111,8 @@ const Dashboard = (props) => {
                 let contentBottom = <> <p>Hello</p> </>;
                 
                 return (
+                    <>
+                    
                         <Col md={6}>
                         <Cube 
                             front={contentFront}
@@ -122,6 +124,8 @@ const Dashboard = (props) => {
                         />
                         
                         </Col>
+                    
+                    </>
                 )
             })}
             </Row>
