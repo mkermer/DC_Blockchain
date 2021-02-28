@@ -15,7 +15,7 @@ const Dashboard = (props) => {
     }, [])
 
     const getBlocks = async () => {
-        const response = await axios.get('http:localhost:4000/blocks/getBlocks');
+        const response = await axios.get('http://localhost:4000/blocks/getBlocks');
         console.log(response.data);
         setBlocks(response.data);
     }
