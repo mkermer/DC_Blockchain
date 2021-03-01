@@ -4,12 +4,14 @@ import './Dashboard.css'
 import axios from 'axios';
 import Cube from './Cube';
 import Moment from 'react-moment';
-import DisplayTransactionsOfBlock from './transactionsOfBlock';
+import { FaCube, FaExchangeAlt, FaThList } from 'react-icons/fa';
+// import DisplayTransactionsOfBlock from './transactionsOfBlock';
 
 
 const Dashboard = (props) => {
     const [blocks, setBlocks] = useState([]);
     const [show, setShow] = useState(false);
+    const [view, setView] = useState(true);
 
     useEffect(() => {
         getBlocks();
@@ -23,6 +25,10 @@ const Dashboard = (props) => {
 
     const showTransactions = () => {
         setShow(true)
+    }
+
+    const changeView = () => {
+        setView(!view)
     }
 
 
@@ -44,10 +50,10 @@ const Dashboard = (props) => {
                     <input type="radio" id="e" label="Front" name="side"/>
                     <label for="e">Timestamp</label>
                     <input type="radio" id="f" label="Front" name="side"/>
-                    <label for="f">Bottom</label>
+                    <label for="f">Transactions</label>
 
                 <h4>Or:</h4>
-                
+                <Button className="switch" variant="dark" onClick={changeView}><FaCube/> <FaExchangeAlt/> <FaThList/></Button>
                 
             <Row>
 
@@ -109,15 +115,30 @@ const Dashboard = (props) => {
                                         </Row>
                                         <Row>
                                             <Col xs={12}>
-                                                <p><Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment></p>
+                                                <p className="time"><Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment></p>
                                             </Col>
                                         </Row>
                                     </>;
-                let contentBottom = <> <p>Hello</p> </>;
+                let contentBottom = <>
+                                        <Row>
+                                            <Col xs={12}>
+                                                <p>Transactions</p>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12}>
+                                                {/* {show === true ? (
+                                                    <DisplayTransactionsOfBlock transactions={blocks.transactions} />
+                                                ) : null} */}
+                                                <Button size="sm">Show all</Button>
+                                            </Col>
+                                        </Row>
+                                    </>;
                 
                 return (
-                    <>
                     
+                    <>
+                    {view === true && (
                         <Col md={6}>
                         <Cube 
                             front={contentFront}
@@ -129,7 +150,34 @@ const Dashboard = (props) => {
                         />
                         
                         </Col>
-                    
+                    )}
+                    {view === false && (
+                        <Card style={{ width: '18rem' }}>
+                            <Card.Header><h2>{`Block ${block.id}`}</h2></Card.Header>
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item>
+                                        <h4>Hash</h4>
+                                        <br />
+                                        {block.hash}
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <h4>Hash of previous Block</h4>
+                                        <br />
+                                        {block.previousHash}
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <h4>Nonce</h4>
+                                        <br />
+                                        {block.nonce}
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <h4>Timestamp</h4>
+                                        <br />
+                                        {block.timestamp}
+                                    </ListGroup.Item>
+                                </ListGroup>
+                        </Card>
+                        )}
                     </>
                 )
             })}

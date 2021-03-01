@@ -9,17 +9,26 @@ import {  } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/app.action';
+import {useHistory} from 'react-router-dom'
 
 function NavbarDC(props) {
 
+    const history = useHistory();
 
+
+    const logout = () => {
+        props.actions.storeUserData(false)
+        console.log("Logged out");
+        history.push("/")
+    }
+    
 
     if (props.applicationState.user !== false) {
         return (
             
             <Navbar bg="dark" variant="dark" sticky="top" collapseOnSelect expand="md">
-                
-                {/* <Link to="/" className="navbar-brand">
+                <div>
+                <a href="/" className="navbar-brand">
                     <img
                     src={Logo}
                     width="50"
@@ -27,32 +36,28 @@ function NavbarDC(props) {
                     className="d-inline-block align-top"
                     alt="DCoin Logo"
                     />  
-                </Link>
-                <Link to="/" className="navbar-brand">
+                </a>
+                <a href="/" className="navbar-brand">
                 <img
                     src={LogoText}
                     height="50"
                     className="d-inline-block align-top"
                     alt="DCoin Text Logo"
                     />
-                </Link>
-                
-
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-
-                <Navbar.Collapse id="responsive-navbar-nav">
-            
-                </Navbar.Collapse>
-
+                </a>
+                </div>
                 
                 <DropdownButton  id="dropdown-button-drop-left" drop="left" className="silver-background"  key="left" variant="light" title="User">
-                
-
                     <Dropdown.Item href="/account">Account</Dropdown.Item>
                     <Dropdown.Item href="/">Dashboard</Dropdown.Item>
-                    <Dropdown.Item href="/" style={{color:"red"}}>Logout</Dropdown.Item>
-                </DropdownButton> */}
+                    <Dropdown.Item onClick={logout} style={{color:"red"}}>Logout</Dropdown.Item>
+                </DropdownButton>
 
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                
+                <Navbar.Collapse id="responsive-navbar-nav">
+            {/* Nav Links */}
+                </Navbar.Collapse>
             </Navbar>
             
         )
@@ -63,7 +68,7 @@ function NavbarDC(props) {
         return (
             
             <Navbar bg="dark" variant="dark" sticky="top">
-                
+                <div>
                 <a href="/">
                 <img
                     src={Logo}
@@ -74,34 +79,30 @@ function NavbarDC(props) {
                     />  
                 </a>
                 
-                
-                
-                {/* <img
+                <a href="/">
+                <img
                     src={LogoText}
                     height="50"
                     className="d-inline-block align-top"
                     alt="DCoin Text Logo"
-                    onClick={navigate}
                     />
-                 */}
-                
-{/* 
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                </a>
+                </div>
 
-               
-                    
-                        <Link to="/registerKeys">
+                {/* <Navbar.Toggle aria-controls="responsive-navbar-nav" /> */}
+                    <div className="NavButtons">
+                        <a href="/registerKeys">
                             <Button variant="outline-light" className="button-text1">
                                 <FaUserPlus/>
                             </Button>
-                        </Link>
+                        </a>
 
-                        <Link to="/login">
+                        <a href="/login">
                             <Button variant="outline-light" className="button-text2">
                                 <FaSignInAlt/>
                             </Button>
-                        </Link>
-*/}
+                        </a>
+                    </div>
 
                 
             </Navbar>

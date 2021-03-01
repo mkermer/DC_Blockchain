@@ -16,7 +16,7 @@
 
 @media (min-width: 768px){
     .button-text1:before{
-        content: "Create Account ";
+        content: "Register ";
     }
 }
 
@@ -31,4 +31,12 @@
         
         justify-content: space-between !important;
     }
+}
+
+.navbar-expand{
+            justify-content: space-between !important;
+}
+
+.NavButtons button{
+    margin-right: 20px;
 }
