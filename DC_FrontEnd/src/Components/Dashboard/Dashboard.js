@@ -5,7 +5,7 @@ import axios from 'axios';
 import Cube from './Cube';
 import Moment from 'react-moment';
 import { FaCube, FaExchangeAlt, FaThList } from 'react-icons/fa';
-// import DisplayTransactionsOfBlock from './transactionsOfBlock';
+import DisplayTransactionsOfBlock from './transactionsOfBlock';
 
 
 const Dashboard = (props) => {
@@ -30,8 +30,6 @@ const Dashboard = (props) => {
     const changeView = () => {
         setView(!view)
     }
-
-
 
     return (
         <div className="Dashboard">
@@ -185,13 +183,13 @@ const Dashboard = (props) => {
                                     <ListGroup.Item>
                                     <h4>Transactions</h4>
                                     <br />
-                                    {/* <Button onClick={showTransactions}>Show Transactions</Button> */}
+                                    <Button onClick={showTransactions}>Show Transactions</Button>
                                 </ListGroup.Item>
                                 </ListGroup>
                         </Card>
-                        {/* {show === true ? (
+                        {show === true ? (
                             <DisplayTransactionsOfBlock transactions={blocks.transactions} />
-                        ) : null} */}
+                        ) : null}
                         </Col>
                         )}
                     </>
