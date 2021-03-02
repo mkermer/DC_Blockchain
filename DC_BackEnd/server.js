@@ -304,7 +304,7 @@ setInterval(() => {
     }
     myfunc()
 
-}, 100000)
+}, 1000000)
 
 io.on("connection", (socket) => {
     console.log('Connection')
