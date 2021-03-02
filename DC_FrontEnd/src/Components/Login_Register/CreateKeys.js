@@ -18,7 +18,8 @@ class CreateKeys extends Component {
             variant: "warning",
             balance: 100,
             walletName: "",
-            text: ""
+            text: "",
+            created: false
 
         }
         this.user = User;
@@ -47,8 +48,8 @@ class CreateKeys extends Component {
                     privateKey: key.getPrivate('hex'),
                     showButton: true,
                     showAlert: true,
-                    text: "Your public and private Key are unique. Make sure to store it safely. If you are losing one of them, you will never be able to access your account again!!!"
-
+                    text: "Your public and private Key are unique. Make sure to store them safely. If you are losing one of them, you will never be able to access your account again!!!",
+                    created: true
                 })
                 const user = {
                     publicKey: this.state.publicKey,
@@ -64,18 +65,17 @@ class CreateKeys extends Component {
                     console.log('Error: ' + err)
                 }
 
+
+
             }, 100)
 
         } else {
             this.setState({
                 showAlert: true,
-                text: "please enter a wallet name"
+                text: "Please provide a wallet name"
             })
         }
-
-
-
-
+    
 
     }
 
@@ -84,11 +84,16 @@ class CreateKeys extends Component {
     render() {
 
         return (
+            <>
             <div className="keys">
+            </div>
+                <div className="foreground">
+
                 <Alert variant={this.state.variant} show={this.state.showAlert}>
                     {this.state.text}
                 </Alert>
-                Register your WalletName:
+
+                <h1>Register your WalletName:</h1>
                 <Form.Group controlId="textarea">
                     <Form.Label>Wallet Name<span>*</span></Form.Label>
                     <Form.Control value={this.state.walletName} onChange={this.setWalletName} required />
@@ -96,8 +101,13 @@ class CreateKeys extends Component {
                         Place your message here, <strong>won't be shared with any third parties!</strong>
                     </Form.Text>
                 </Form.Group>
-                <p>Your public key: {this.state.publicKey}</p>
-                <p>Your private key: {this.state.privateKey}</p>
+                {this.state.created && (
+                    <>
+                        <p className="key">Your public key: {this.state.publicKey}</p>
+                        <p className="key">Your private key: {this.state.privateKey}</p>
+                    </>
+                )}
+                
                 <Button variant="outline-info"
                     onClick={this.generateKeys}
                     disabled={this.state.showButton}>
@@ -107,7 +117,8 @@ class CreateKeys extends Component {
                 <Button variant="outline-info">
                     <Link to="/login" >Return to login</Link>
                 </Button>
-            </div>
+                </div>
+            </>
         )
     }
 

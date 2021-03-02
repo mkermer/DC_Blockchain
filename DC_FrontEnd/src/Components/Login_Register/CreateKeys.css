@@ -1,5 +1,26 @@
 .keys{
-    font-size: 110%;
+    background-image: url(../../Logo/DChainBIG.svg);
+    min-height: 525px;
+    width: 96%;
+    opacity: 0.2;
+    position: relative;
+}
+
+.foreground{
+    opacity: 1.5;
+    /* font-size: 110%; */
     margin: auto; 
-    
+    height: 30%;
+    width: 30%;
+    z-index: 100;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 50px;
+}
+
+.foreground .key{
+    word-break:break-all;
 }
