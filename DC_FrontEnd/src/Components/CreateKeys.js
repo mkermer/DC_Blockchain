@@ -17,7 +17,8 @@ class CreateKeys extends Component {
             showAlert: false,
             variant: "warning",
             balance: 100,
-            walletName: ""
+            walletName: "",
+            text: ""
 
         }
         this.user = User;
@@ -38,47 +39,54 @@ class CreateKeys extends Component {
         const EC = require('elliptic').ec;
         const ec = new EC('secp256k1');
         const key = ec.genKeyPair();
-        setTimeout(async () => {
+
+        if (this.state.walletName !== "") {
+            setTimeout(async () => {
+                this.setState({
+                    publicKey: key.getPublic('hex'),
+                    privateKey: key.getPrivate('hex'),
+                    showButton: true,
+                    showAlert: true,
+                    text: "Your public and private Key are unique. Make sure to store it safely. If you are losing one of them, you will never be able to access your account again!!!"
+
+                })
+                const user = {
+                    publicKey: this.state.publicKey,
+                    privateKey: this.state.privateKey,
+                    balance: this.state.balance,
+                    walletName: this.state.walletName
+                }
+
+                try {
+                    const response = await axios.post('http://localhost:4000/users/add', user);
+                    console.log(response.data);
+                } catch (err) {
+                    console.log('Error: ' + err)
+                }
+
+            }, 100)
+
+        } else {
             this.setState({
-                publicKey: key.getPublic('hex'),
-                privateKey: key.getPrivate('hex'),
-                showButton: true,
+                showAlert: true,
+                text: "please enter a wallet name"
             })
+        }
 
 
-        }, 100)
 
 
-
-        // this.postUserData(user);
-
-        //Post method
 
     }
 
-    register = async () => {
-        const user = {
-            publicKey: this.state.publicKey,
-            privateKey: this.state.privateKey,
-            balance: this.state.balance,
-            walletName: this.state.walletName
-        }
 
-        try {
-            const response = await axios.post('http://localhost:4000/users/add', user);
-            console.log(response.data);
-        } catch (err) {
-            console.log('Error: ' + err)
-        }
-    }
 
     render() {
 
         return (
             <div className="keys">
                 <Alert variant={this.state.variant} show={this.state.showAlert}>
-                    Your public and private Key are unique. Make sure to store it safely.<br />
-                If you are losing one of them, you will never be able to access your account again!!!.
+                    {this.state.text}
                 </Alert>
                 Register your WalletName:
                 <Form.Group controlId="textarea">
@@ -95,9 +103,7 @@ class CreateKeys extends Component {
                     disabled={this.state.showButton}>
                     Generate Wallet
                 </Button>
-                <Button onClick={this.register}>
-                    Register
-                </Button>
+
                 <Button variant="outline-info">
                     <Link to="/login" >Return to login</Link>
                 </Button>
