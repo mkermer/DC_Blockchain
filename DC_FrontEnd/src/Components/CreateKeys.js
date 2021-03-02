@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert'
 import User from './class';
 import BlockchainAPI from './BlockchainAPI';
@@ -17,10 +17,19 @@ class CreateKeys extends Component {
             showAlert: false,
             variant: "warning",
             balance: 100,
+            walletName: ""
 
         }
         this.user = User;
         this.api = BlockchainAPI;
+    }
+
+
+    setWalletName = (e) => {
+        const wallet = e.target.value;
+        this.setState({
+            walletName: wallet
+        })
     }
 
 
@@ -36,18 +45,7 @@ class CreateKeys extends Component {
                 showButton: true,
             })
 
-            const user = {
-                publicKey: this.state.publicKey,
-                privateKey: this.state.privateKey,
-                balance: this.state.balance
-            }
 
-            try {
-                const response = await axios.post('http://localhost:4000/users/add', user);
-                console.log(response.data);
-            } catch (err) {
-                console.log('Error: ' + err)
-            }
         }, 100)
 
 
@@ -58,25 +56,22 @@ class CreateKeys extends Component {
 
     }
 
-    postUserData = async (user) => {
+    register = async () => {
+        const user = {
+            publicKey: this.state.publicKey,
+            privateKey: this.state.privateKey,
+            balance: this.state.balance,
+            walletName: this.state.walletName
+        }
+
         try {
-            const response = await axios.post(`http:localhost:4000/users/add`, user);
+            const response = await axios.post('http://localhost:4000/users/add', user);
             console.log(response.data);
         } catch (err) {
             console.log('Error: ' + err)
         }
     }
 
-    generateUser = () => {
-        const user = {
-            publicKey: this.state.publicKey,
-            privateKey: this.state.privateKey,
-            balance: this.state.balance
-        }
-
-        return this.state.user;
-
-    }
     render() {
 
         return (
@@ -85,12 +80,23 @@ class CreateKeys extends Component {
                     Your public and private Key are unique. Make sure to store it safely.<br />
                 If you are losing one of them, you will never be able to access your account again!!!.
                 </Alert>
+                Register your WalletName:
+                <Form.Group controlId="textarea">
+                    <Form.Label>Wallet Name<span>*</span></Form.Label>
+                    <Form.Control value={this.state.walletName} onChange={this.setWalletName} required />
+                    <Form.Text className="text-muted">
+                        Place your message here, <strong>won't be shared with any third parties!</strong>
+                    </Form.Text>
+                </Form.Group>
                 <p>Your public key: {this.state.publicKey}</p>
                 <p>Your private key: {this.state.privateKey}</p>
                 <Button variant="outline-info"
                     onClick={this.generateKeys}
                     disabled={this.state.showButton}>
                     Generate Wallet
+                </Button>
+                <Button onClick={this.register}>
+                    Register
                 </Button>
                 <Button variant="outline-info">
                     <Link to="/login" >Return to login</Link>

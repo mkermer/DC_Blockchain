@@ -1,4 +1,5 @@
 const express = require('Express');
+const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const cors = require('cors');
 const SHA256 = require('crypto-js/sha256');
@@ -23,15 +24,18 @@ require('dotenv').config();
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 const blockRouter = require('./routes/block');
 const UserRouter = require('./routes/user');
 const DCWalletRouter = require('./routes/DC');
-
+const LoginRouter = require('./routes/login')
 
 app.use('/blocks', blockRouter);
 app.use('/users', UserRouter);
-app.use('DCWallet', DCWalletRouter);
+app.use('/DCWallet', DCWalletRouter);
+app.use('/login', LoginRouter);
+
 
 
 
@@ -322,6 +326,7 @@ io.on("connection", (socket) => {
         // Confirm hash found by user
         console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
         if (redoUserHash == testUserFoundHash.hash && serverCreatesTheBlock) {
+
             console.log('Server creates the block: false')
             console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
             const nextBlock = {

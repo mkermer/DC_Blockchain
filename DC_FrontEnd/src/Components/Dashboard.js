@@ -10,6 +10,7 @@ const Dashboard = (props) => {
 
     useEffect(() => {
         getBlocks();
+
     }, [])
 
     const getBlocks = async () => {
@@ -61,7 +62,7 @@ const Dashboard = (props) => {
 
                         </Card>
                         {show === true ? (
-                            <DisplayTransactionsOfBlock transactions={blocks.transactions} />
+                            <DisplayTransactionsOfBlock transactions={block.transactions} />
                         ) : null}
                     </div>
                 )

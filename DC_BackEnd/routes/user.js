@@ -1,6 +1,10 @@
 const router = require('express').Router();
 let User = require('../models/user.model');
 let Block = require('../models/block.model');
+const createUser = require("../controllers/userController");
+//const authGuard = require() "../middleware/authGuard");
+const hasBody = require("../middlewares/hasBody");
+
 
 router.route('/').get(async (req, res) => {
     try {
@@ -12,26 +16,8 @@ router.route('/').get(async (req, res) => {
 })
 
 
-router.route('/add').post(async (req, res) => {
-    const publicKey = req.body.publicKey;
-    const privateKey = req.body.privateKey;
-    const balance = Number(req.body.balance);
+router.post("/add", hasBody, createUser);
 
-
-    const newUser = new User({
-        publicKey,
-        privateKey,
-        balance
-
-    });
-
-    try {
-        const savedUser = await newUser.save();
-        res.json(savedUser);
-    } catch (err) {
-        res.json('Error: ' + err);
-    }
-})
 
 router.route('/:id').get((req, res) => {
     User.findById(req.params.id)
@@ -56,26 +42,6 @@ router.route('/getTransactions/:address').get(async (req, res) => {
 
         let transactions = [];
 
-        // blocks.map(block => {
-        //     if (block.transactions !== []) {
-        //         block.transaction.map(transaction => {
-        //             if (transaction.fromAddress === publicKey) {
-        //                 transactions.push(transaction);
-        //             }
-        //         })
-        //     }
-
-        // })
-
-        // const filteredTransaction = blocks.filter(block => {
-        //     const filteredTrans = block.transactions.filter(transaction => {
-        //         transaction.fromAddress === publicKey;
-
-        //     })
-        //     if (filteredTrans.length > 0) {
-        //         res.json(filteredTrans);
-        //     }
-        // })
 
         for (let i = 0; i < blocks.length; i++) {
             const transaction = blocks[i].transactions;
