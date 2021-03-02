@@ -14,63 +14,55 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            pubInput: "",
-            privInput: "",
+
             showSuccess: false,
             variant: "success",
             text: '',
-            value: false,
-            to: false,
-            id: "",
-            balance: 0
+
+            loginData: {
+                walletName: "",
+                privInput: ""
+            }
+
+
         }
 
     }
 
 
-    setPubInput = (e) => {
-        const input = e.target.value;
-        this.setState({
-            pubInput: input
-        })
-    }
+
 
     setPrivInput = (e) => {
-        const input = e.target.value;
+        const loginData = { ...this.state.loginData };
+        loginData.privInput = e.target.value;
+
         this.setState({
-            privInput: input
+            loginData
         })
     }
+
+    setWalletName = (e) => {
+        const loginData = { ...this.state.loginData };
+        loginData.walletName = e.target.value;
+
+        this.setState({
+            loginData
+        })
+    }
+
     authentication = async () => {
 
-        // get users from the api
+
 
         try {
-            const response = await axios.get(`http://localhost:4000/users`);
-            const user = response.data;
-            console.log(user);
-            user.map(user => {
-                if (user.publicKey === this.state.pubInput &&
-                    user.privateKey === this.state.privInput) {
-                    const currentUser = user;
-                    this.props.actions.storeUserData(currentUser)
-                    this.props.history.push("/account")
-                    this.setState({
-                        value: true,
-
-
-                    })
-
-                }
-
-
-            })
-
-            if (this.state.value = false) {
-                this.setState({
-                    to: "/empty"
-                })
+            const res = await axios.post('http://localhost:4000/login/login', this.state.loginData);
+            const response = res.data;
+            console.log(response.success)
+            if (response.success === true) {
+                this.props.actions.storeUserData(response.userData)
+                this.props.history.push("/account")
             }
+
         } catch (err) {
             console.log('Error: ' + err)
         }
@@ -88,12 +80,11 @@ class Login extends Component {
                     {this.state.text}
                 </Alert>
                 <Form>
-                    <Form.Group controlId="email">
-                        <Form.Label>Publicaddress:<span>*</span></Form.Label>
-                        <Form.Control value={this.state.pubInput}
-                            onChange={this.setPubInput} type="text" required />
+                    <Form.Group controlId="textarea">
+                        <Form.Label>Wallet Name<span>*</span></Form.Label>
+                        <Form.Control value={this.state.walletName} onChange={this.setWalletName} required />
                         <Form.Text className="text-muted">
-                            The E-Mail address on which we will reply, <strong>won't be shared with any third parties!</strong>
+                            Place your message here, <strong>won't be shared with any third parties!</strong>
                         </Form.Text>
                     </Form.Group>
                     <Form.Group controlId="textarea">
