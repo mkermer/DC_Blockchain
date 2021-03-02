@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, ListGroup, Row, Col, Form } from 'react-bootstrap';
+import { Button, Card, ListGroup, Row, Col } from 'react-bootstrap';
 import './Dashboard.css'
 import axios from 'axios';
 import Cube from './Cube';
@@ -36,9 +36,15 @@ const Dashboard = (props) => {
     return (
         <div className="Dashboard">
             
-            <h1>Latest 5 Blocks on DC chain</h1>
+            <h1>Latest 5 Blocks on DChain</h1>
             
-                <h4>Select View:</h4>
+            <div className="divCenter textCenter">
+                <h4 className="heading">Select View:</h4>
+                <Button className="switch" variant="dark" onClick={changeView}><FaCube/> <FaExchangeAlt/> <FaThList/></Button>
+            </div>
+
+            {view === true && (
+                <>
                     <input type="radio" id="a" label="Front" name="side" />
                     <label for="a">Block</label>
                     <input type="radio" id="b" label="Front" name="side"/>
@@ -51,9 +57,8 @@ const Dashboard = (props) => {
                     <label for="e">Timestamp</label>
                     <input type="radio" id="f" label="Front" name="side"/>
                     <label for="f">Transactions</label>
-
-                <h4>Or:</h4>
-                <Button className="switch" variant="dark" onClick={changeView}><FaCube/> <FaExchangeAlt/> <FaThList/></Button>
+                </>
+            )}
                 
             <Row>
 
@@ -130,7 +135,8 @@ const Dashboard = (props) => {
                                                 {/* {show === true ? (
                                                     <DisplayTransactionsOfBlock transactions={blocks.transactions} />
                                                 ) : null} */}
-                                                <Button size="sm">Show all</Button>
+                                                {/* <Button size="sm">Show all</Button> */}
+                                                <a href="/transactions" className="time">Show all Transactions</a>
                                             </Col>
                                         </Row>
                                     </>;
@@ -152,7 +158,8 @@ const Dashboard = (props) => {
                         </Col>
                     )}
                     {view === false && (
-                        <Card style={{ width: '18rem' }}>
+                        <Col  xs={12} md={6} lg={4}>
+                        <Card>
                             <Card.Header><h2>{`Block ${block.id}`}</h2></Card.Header>
                                 <ListGroup variant="flush">
                                     <ListGroup.Item>
@@ -173,10 +180,19 @@ const Dashboard = (props) => {
                                     <ListGroup.Item>
                                         <h4>Timestamp</h4>
                                         <br />
-                                        {block.timestamp}
+                                        <Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment>
                                     </ListGroup.Item>
+                                    <ListGroup.Item>
+                                    <h4>Transactions</h4>
+                                    <br />
+                                    {/* <Button onClick={showTransactions}>Show Transactions</Button> */}
+                                </ListGroup.Item>
                                 </ListGroup>
                         </Card>
+                        {/* {show === true ? (
+                            <DisplayTransactionsOfBlock transactions={blocks.transactions} />
+                        ) : null} */}
+                        </Col>
                         )}
                     </>
                 )

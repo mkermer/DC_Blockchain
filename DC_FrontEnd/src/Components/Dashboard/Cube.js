@@ -24,4 +24,4 @@ function Cube(props) {
     )
 }
 
-export default Cube
+export default Cube;

@@ -9,7 +9,7 @@ h1, h2 , h3, .audiowide{
     margin: 0 !important;
 }
 
-h1{
+h1, h2, h3, h4, h5, h6{
     text-align: center;
 }
 
@@ -96,5 +96,18 @@ h1{
     border-color: #D5D3CA !important;
     color: #343a40 !important;
 }
+
+.textCenter{
+    text-align: center;
+}
+
+.divCenter{
+    margin: 0 auto;
+}
+
+.flexCenter{
+    justify-content: center;
+}
+
 
 @import '~bootstrap/scss/bootstrap.scss';
