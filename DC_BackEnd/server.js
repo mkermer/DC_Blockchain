@@ -29,7 +29,9 @@ app.use(bodyParser.json());
 const blockRouter = require('./routes/block');
 const UserRouter = require('./routes/user');
 const DCWalletRouter = require('./routes/DC');
-const LoginRouter = require('./routes/login')
+const LoginRouter = require('./routes/login');
+const { findById } = require('./models/block.model');
+const { verify } = require('jsonwebtoken');
 
 app.use('/blocks', blockRouter);
 app.use('/users', UserRouter);
@@ -61,7 +63,8 @@ const genesisFunction = async () => {
             timestamp: Date.parse('2020-02-01T23:00:00.000Z'),
             transactions: [],
             merkleHash: 'null',
-            transactionsMined: true
+            transactionsMined: true,
+            transactionHashes: []
         }
         const newBlock = new Block(firstBlock)
         newBlock.save();
@@ -152,11 +155,31 @@ app.post("/blocks/update/:address", async (req, res) => {
         const tHash = SHA256(req.body.toAddress + req.body.fromAdress + req.body.amount + timestampNow).toString();
         const newTrans = { ...req.body, hash: tHash, timestamp: timestampNow }
         console.log(newTrans)
-        transA = [...transA, newTrans]
-        transAHashes = [...transAHashes, tHash]
+        transA = newTrans
+        transAHashes = tHash
         res.status(200)
         res.json(withdrawUser)
 
+
+        const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }]);
+        const latestBlock = block[0];
+
+        Block.findById(latestBlock._id)
+            .then(block => {
+                block.id = latestBlock.id,
+                    block.hash = latestBlock.hash,
+                    block.previousHash = latestBlock.previousHash,
+                    block.nonce = latestBlock.nonce,
+                    block.timestamp = latestBlock.timestamp,
+                    block.transactions = [...latestBlock.transactions, transA]
+                block.merkleHash = latestBlock.merkleHash,
+                    transactionsMined = latestBlock.transactionsMined
+                block.transactionHashes = [...latestBlock.transactionHashes, transAHashes]
+                block.save()
+
+            }
+
+            )
 
     } catch (err) {
         console.log(err)
@@ -168,14 +191,14 @@ app.post("/blocks/update/:address", async (req, res) => {
 
 
 //Merkle tree for even number of elements
-const merkleTreeHash = (a, previousHash) => {
+const merkleTreeHash = (a) => {
 
     console.log(a)
     let b = []
     // if there are no hashes
     if (a.length === 0) {
         console.log(SHA256('0').toString());
-        return SHA256(previousHash).toString();
+        return SHA256('0').toString();
     }
     else if (a.length === 1) {
         console.log(a[0])
@@ -254,7 +277,7 @@ transAHashes = []
 
 const secondHash = SHA256('0').toString();
 
-const myfunc = async (hashParam, nonceParam) => {
+const myfunc = async (hashParam, nonceParam, transaction, transactionHashes) => {
     // all the transactions in this intervall goes to transB, 
     transB = [...transA];
     transBHashes = [...transAHashes]
@@ -279,9 +302,10 @@ const myfunc = async (hashParam, nonceParam) => {
         previousHash: previousBlockHash,
         nonce: nonceParam,
         timestamp,
-        transactions: transB,
+        transactions: transaction,
         merkleHash: merkleHash,
-        transactionsMined: false
+        transactionsMined: false,
+        transactionHashes: transactionHashes
     }
     const newBlock = new Block(nextBlock);
     newBlock.save();
@@ -291,16 +315,9 @@ const myfunc = async (hashParam, nonceParam) => {
 
 
 }
-const create2ndBlock = () => {
-    const blocks = Block.find();
-    if (blocks.length === 1) {
-        myfunc(secondHash, 1);
-    } else {
-        console.log('sooooooryy')
-    }
-}
 
-create2ndBlock();
+
+
 
 setInterval(() => {
 
@@ -320,7 +337,7 @@ setInterval(() => {
         const previousBlockHash = await block[0].hash
         const previousBlockNonce = await block[0].nonce
         console.log(maxBlockID)
-        const merkleHash = merkleTreeHash(transBHashes, previousBlockHash);
+        const merkleHash = merkleTreeHash(transBHashes);
         console.log(merkleHash)
 
         dataToMine = {
@@ -341,6 +358,89 @@ setInterval(() => {
     sendData()
 }, 10000)
 
+const verifiedBlock = async () => {
+    const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }]);
+    const latestBlock = block[0];
+    Block.findById(latestBlock._id)
+        .then(
+            block => {
+                block.id = latestBlock.id,
+                    block.hash = latestBlock.hash,
+                    block.previousHash = latestBlock.previousHash,
+                    block.nonce = latestBlock.nonce,
+                    block.timestamp = latestBlock.timestamp,
+                    block.transactions = latestBlock.transactions,
+                    block.merkleHash = merkleTreeHash(block.transactionHashes),
+                    block.transactionsMined = true
+                block.transactionHashes = latestBlock.transactionHashes,
+
+                    block.save()
+
+            }
+
+        )
+
+}
+
+
+const MineRewards = async (userWallet, userHash, userNonce) => {
+    const wallet = await DCWallet.find();
+    const genesisWallet = wallet[0];
+    const users = await User.find();
+    const reward = 1;
+
+    let rewardedUser = "";
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].publicKey === userWallet) {
+            rewardedUser = users[i];
+        }
+    }
+
+    let genesisBalance = genesisWallet.balance;
+    let rewardBalance = rewardedUser.balance;
+
+    rewardBalance += reward;
+    genesisBalance -= reward;
+
+    User.findById(rewardedUser._id)
+        .then(user => {
+            user.publicKey = rewardedUser.publicKey;
+            user.privateKey = rewardedUser.privateKey;
+            user.balance = rewardBalance;
+
+            user.save()
+
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+
+    DCWallet.findById(genesisWallet._id)
+        .then(wallet => {
+            wallet.balance = genesisBalance;
+
+            wallet.save()
+
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+
+    io.emit('miningSuccess', rewardBalance);
+
+    const timestampNow = Date.now()
+    const tHash = SHA256(rewardedUser.publicKey + 'DCWallet' + reward + timestampNow).toString();
+
+    const miningTrans = {
+        toAddress: rewardedUser.publicKey,
+        fromAdress: "DCWallet",
+        amount: reward,
+        hash: tHash,
+        timestamp: timestampNow
+    }
+
+    const trans = [miningTrans]
+
+    myfunc(userHash, userNonce, trans)
+
+}
+
 
 io.on("connection", (socket) => {
     console.log('Connection')
@@ -349,7 +449,7 @@ io.on("connection", (socket) => {
         console.log(testUserFoundHash);
         // all the transactions in this intervall goes to transB, 
 
-
+        const userFoundHash = `User: ${testUserFoundHash.userPublicKey} found the Hash`;
 
         const redoUserHash = SHA256(
             dataToMine.merkleHash
@@ -365,13 +465,20 @@ io.on("connection", (socket) => {
         // Confirm hash found by user
         console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
         if (redoUserHash == testUserFoundHash.hash) {
+            verifiedBlock();
 
-            myfunc(redoUserHash, testUserFoundHash.nonce)
+            MineRewards(testUserFoundHash.userPublicKey, redoUserHash, testUserFoundHash.nonce);
+
+
+
+            io.emit('hi', userFoundHash);
 
             //Tell all users that someone has found the
-
+            // io.emit('Hashfound', userFoundHash)
 
             //send coins to user that mined - in form of a transaction
+
+
         }
     });
 });
@@ -383,3 +490,4 @@ app.get('/', (req, res) => {
 httpServer.listen(port, () => {
     console.log(`Server is running on ${port}`);
 })
+

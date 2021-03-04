@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
 
 
+
 function Account(props) {
 
     const [balance, setBalance] = useState(props.applicationState.user.balance);
@@ -83,6 +84,10 @@ function Account(props) {
             console.log(arg);
             setMiningData(arg)
         });
+
+        socket.on('hi', (arg) => {
+            console.log(arg);
+        })
 
         socket.off('connect', () => {
             console.log(`I'm connected with the back-end`);

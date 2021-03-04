@@ -243,113 +243,113 @@ let serverCreatesTheBlock = true;
 // MISSING:
 //   1 - Decide what to do with second block block - mining parametters
 
-// setInterval(() => {
-//     console.log('---- START - setInterval ----')
-//     // all the transactions in this intervall goes to transB, 
-//     transB = [...transA];
-//     transBHashes = [...transAHashes]
-//     // reset transA 
-//     transA = [];
-//     transAHashes = []
+setInterval(() => {
+    console.log('---- START - setInterval ----')
+    // all the transactions in this intervall goes to transB, 
+    transB = [...transA];
+    transBHashes = [...transAHashes]
+    // reset transA 
+    transA = [];
+    transAHashes = []
 
 
 
 
-//     console.log('Switch in transactions is over')
+    console.log('Switch in transactions is over')
 
-//     const myfunc = async () => {
+    const myfunc = async () => {
 
-//         const timestamp = new Date().getTime();
-//         console.log(timestamp);
+        const timestamp = new Date().getTime();
+        console.log(timestamp);
 
-//         const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }])
-//         const maxBlockID = await (block[0].id + 1)
-//         const previousBlockHash = await block[0].hash
-//         const previousBlockNonce = await block[0].nonce
-//         console.log(maxBlockID)
-//         const merkleHash = merkleTreeHash(transBHashes, previousBlockHash);
-//         console.log(merkleHash)
+        const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }])
+        const maxBlockID = await (block[0].id + 1)
+        const previousBlockHash = await block[0].hash
+        const previousBlockNonce = await block[0].nonce
+        console.log(maxBlockID)
+        const merkleHash = merkleTreeHash(transBHashes, previousBlockHash);
+        console.log(merkleHash)
 
-//         dataToMine = {
-//             merkleHash,
-//             blockID: maxBlockID,
-//             previousBlockHash,
-//             previousBlockNonce,
-//             timestamp,
-//             // get hashnumber 
-//             difficultyHash: '00005'
-//         }
+        dataToMine = {
+            merkleHash,
+            blockID: maxBlockID,
+            previousBlockHash,
+            previousBlockNonce,
+            timestamp,
+            // get hashnumber 
+            difficultyHash: '00005'
+        }
 
-//         //sends data to the frontend
-//         io.emit("sendDataForMining", dataToMine);
+        //sends data to the frontend
+        io.emit("sendDataForMining", dataToMine);
 
-//         console.log(serverCreatesTheBlock)
-//         if (serverCreatesTheBlock) {
-//             console.log('Server creates the block: true')
-//             const nextBlock = {
-//                 id: Number(maxBlockID),
-//                 hash: merkleHash,
-//                 previousHash: previousBlockHash,
-//                 nonce: Number(1),
-//                 timestamp,
-//                 transactions: transB
-//             }
-//             const newBlock = new Block(nextBlock);
-//             newBlock.save();
-//         }
+        console.log(serverCreatesTheBlock)
+        if (serverCreatesTheBlock) {
+            console.log('Server creates the block: true')
+            const nextBlock = {
+                id: Number(maxBlockID),
+                hash: merkleHash,
+                previousHash: previousBlockHash,
+                nonce: Number(1),
+                timestamp,
+                transactions: transB
+            }
+            const newBlock = new Block(nextBlock);
+            newBlock.save();
+        }
 
-//         serverCreatesTheBlock = true
+        serverCreatesTheBlock = true
 
-//         console.log('---- END - setInterval ----')
-//     }
-//     myfunc()
+        console.log('---- END - setInterval ----')
+    }
+    myfunc()
 
-// }, 10000)
+}, 10000)
 
-// io.on("connection", (socket) => {
-//     console.log('Connection')
-//     socket.once("sendHash", (testUserFoundHash) => {
-//         console.log('Hash: ')
-//         console.log(testUserFoundHash);
+io.on("connection", (socket) => {
+    console.log('Connection')
+    socket.once("sendHash", (testUserFoundHash) => {
+        console.log('Hash: ')
+        console.log(testUserFoundHash);
 
-//         const redoUserHash = SHA256(
-//             dataToMine.merkleHash
-//             + dataToMine.blockID
-//             + dataToMine.previousBlockHash
-//             + dataToMine.previousBlockNonce
-//             + dataToMine.timestamp
-//             + testUserFoundHash.nonce).toString();
-//         console.log(redoUserHash)
-//         console.log(testUserFoundHash.hash)
-//         console.log(redoUserHash == testUserFoundHash.hash)
+        const redoUserHash = SHA256(
+            dataToMine.merkleHash
+            + dataToMine.blockID
+            + dataToMine.previousBlockHash
+            + dataToMine.previousBlockNonce
+            + dataToMine.timestamp
+            + testUserFoundHash.nonce).toString();
+        console.log(redoUserHash)
+        console.log(testUserFoundHash.hash)
+        console.log(redoUserHash == testUserFoundHash.hash)
 
-//         // Confirm hash found by user
-//         console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
-//         if (redoUserHash == testUserFoundHash.hash && serverCreatesTheBlock) {
+        // Confirm hash found by user
+        console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
+        if (redoUserHash == testUserFoundHash.hash && serverCreatesTheBlock) {
 
-//             console.log('Server creates the block: false')
-//             console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
-//             const nextBlock = {
-//                 id: dataToMine.blockID,
-//                 hash: redoUserHash,
-//                 previousHash: dataToMine.previousBlockHash,
-//                 nonce: testUserFoundHash.nonce,
-//                 timestamp: dataToMine.timestamp,
-//                 transactions: transB
-//             }
+            console.log('Server creates the block: false')
+            console.log('serverCreatesTheBlock: ' + serverCreatesTheBlock)
+            const nextBlock = {
+                id: dataToMine.blockID,
+                hash: redoUserHash,
+                previousHash: dataToMine.previousBlockHash,
+                nonce: testUserFoundHash.nonce,
+                timestamp: dataToMine.timestamp,
+                transactions: transB
+            }
 
-//             const newBlock = new Block(nextBlock);
-//             newBlock.save();
-//             serverCreatesTheBlock = false
-//         }
+            const newBlock = new Block(nextBlock);
+            newBlock.save();
+            serverCreatesTheBlock = false
+        }
 
-//         //Tell all users that someone has found the
+        //Tell all users that someone has found the
 
 
-//         //send coins to user that mined - in form of a transaction
+        //send coins to user that mined - in form of a transaction
 
-//     });
-// });
+    });
+});
 
 app.get('/', (req, res) => {
     res.send('Hello World')
