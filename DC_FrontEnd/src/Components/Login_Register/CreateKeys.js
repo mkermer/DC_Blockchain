@@ -130,7 +130,6 @@ class CreateKeys extends Component {
                 <div className="foreground">
 
                 <h1>Register</h1>
-                
                 <br/>
                 <Form.Group controlId="textarea">
                     <Form.Label><strong>Wallet Name</strong><span>*</span></Form.Label>
@@ -179,21 +178,23 @@ class CreateKeys extends Component {
                     </>
                 )}
                 
-                {this.state.created===false ?
-                <Button
-                    onClick={this.generateKeys}
-                    disabled={this.state.showButton}
-                >
-                    Generate Wallet
-                </Button>
-                : null }
-                
-                <Link to="/login" >
-                    <Button variant="outline-dark">
-                        Return to Login
-                    </Button>
-                </Link>    
-                
+                    <div className="regButtons">
+                        {this.state.created===false ?
+                        <Button
+                            onClick={this.generateKeys}
+                            disabled={this.state.showButton}
+                        >
+                            Generate Wallet
+                        </Button>
+                        : null }
+                        
+                        <Link to="/login" >
+                            <Button variant="outline-dark">
+                                Return to Login
+                            </Button>
+                        </Link>    
+                    </div>
+
                 </div>
             </>
         )

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Navbar, Nav, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Navbar, Nav, Button, DropdownButton, Dropdown, OverlayTrigger, Popover } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Logo from '../../Logo/DCoin1.svg';
 import LogoText from '../../Logo/DCoinText.svg';
 import './NavbarDC.css';
-import { FaSignInAlt, FaUserPlus, FaUser } from 'react-icons/fa';
+import { FaSignInAlt, FaUserPlus, FaUser, FaPowerOff } from 'react-icons/fa';
 import {  } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -47,16 +47,44 @@ function NavbarDC(props) {
                 </a>
                 </div>
                 
-                <DropdownButton  id="dropdown-button-drop-left" drop="left" className="silver-background"  key="left" variant="light" title="User">
+                {/* <DropdownButton  id="dropdown-button-drop-left" drop="left" className="silver-background"  key="left" variant="light" title="User">
                     <Dropdown.Item href="/account">Account</Dropdown.Item>
                     <Dropdown.Item href="/">Dashboard</Dropdown.Item>
                     <Dropdown.Item onClick={logout} style={{color:"red"}}>Logout</Dropdown.Item>
-                </DropdownButton>
+                </DropdownButton> */}
+
+                {/* <OverlayTrigger
+                    trigger="click"
+                    key="left"
+                    placement="left"
+                    overlay={
+                        <Popover id="popover-positioned-left">
+                        <Popover.Title as="h3"></Popover.Title>
+                        <Popover.Content>
+                            <Button onClick={logout} style={{color:"red"}}>Logout</Button>
+                        </Popover.Content>
+                        </Popover>
+                    }
+                    >
+                    <Button variant="primary"><FaUser/></Button>
+                </OverlayTrigger> */}
+
+
 
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 
                 <Navbar.Collapse id="responsive-navbar-nav">
-            {/* Nav Links */}
+                    {/* Nav Links */}
+                    <Nav>
+                        <Nav.Link href="/">Dashboard</Nav.Link>
+                        <Nav.Link href="/account">Account</Nav.Link>
+                    </Nav>
+                    <Nav className="justify-content-end">
+                        <Button className="logout" variant="danger" onClick={logout} alt="logout"><FaPowerOff/></Button>
+                    </Nav>
+
+                    
+                    
                 </Navbar.Collapse>
             </Navbar>
             
