@@ -80,7 +80,7 @@ function NavbarDC(props) {
                         <Nav.Link href="/account">Account</Nav.Link>
                     </Nav>
                     <Nav className="justify-content-end">
-                        <Button className="logout" variant="danger" onClick={logout} alt="logout"><FaPowerOff/></Button>
+                        <Button className="logout" variant="outline-danger" onClick={logout} title="Logout"><FaPowerOff/></Button>
                     </Nav>
 
                     

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import Alert from 'react-bootstrap/Alert'
+import  { Button, Form, Alert, Card, ListGroup, Row, Col } from 'react-bootstrap'
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,6 +7,8 @@ import * as actions from '../../actions/app.action';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
+import Moment from 'react-moment';
+
 
 
 function Account(props) {
@@ -50,7 +50,7 @@ function Account(props) {
         try {
             const thisTransaction = {
                 toAddress: toAddressInput,
-                fromAdress: fromAddressInput,
+                fromAddress: fromAddressInput,
                 amount: amount
 
             }
@@ -156,15 +156,14 @@ function Account(props) {
             <Alert variant={variant} show={showSuccess}>
                 {text}
             </Alert>
+
+            <p>
+                Your public Key:
+            </p>
+            <p>
+                {fromAddressInput}
+            </p>
             <Form>
-                <Form.Group controlId="email">
-                    <Form.Label>From address:<span>*</span></Form.Label>
-                    <Form.Control placeholder={fromAddressInput} value={fromAddressInput}
-                        type="text" required />
-                    <Form.Text className="text-muted">
-                        Thos is your wallet address <strong>You cannot change it, because you can only spend your own coins</strong>
-                    </Form.Text>
-                </Form.Group>
                 <Form.Group controlId="textarea">
                     <Form.Label>To address<span>*</span></Form.Label>
                     <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
@@ -207,10 +206,49 @@ function Account(props) {
             <h5>Do you want to mine?</h5>
             <Button onClick={() => setTrig(!trig)} >Mine</Button>
 
-            <table>
+            <h3>
+                Your Transactions
+            </h3>
+            {transactions.map(transaction => {
+                console.log(transaction.fromAddress)
+                console.log(fromAddressInput)
+            return(
+            <Card style={{ width: '18rem' }}>
+                <Card.Header>Your transactions </Card.Header>
+                <ListGroup variant="flush">
+                    <Row>
+                        <Col>
+                            <ListGroup.Item>
+                                {transaction.fromAddress === fromAddressInput ? (
+                                    <>
+                                        <p>To: {transaction.toAddress}</p>
+                                    
+                                    </>
+                                ) : (
+                                    <p>From: {transaction.fromAddress}</p>
+                                )}
+                            </ListGroup.Item>
+                        </Col>
+                        <Col>
+                            {/* <Moment> {transaction.timestamp} </Moment> */}
+                            {transaction.timestamp}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <p>Hash: {transaction.hash}</p>
+                        </Col>
+                        <Col>
+                            <p> {transaction.amount} </p>
+                        </Col>
+                    </Row>
+                </ListGroup>
+            </Card>
+            )})}
+            
+            {/* <table>
                 <thead>
                     <tr>
-                        <th>From</th>
                         <th>To</th>
                         <th>Amount</th>
                         <th>Hash</th>
@@ -222,8 +260,7 @@ function Account(props) {
                     {transactions.map(transaction => {
                         return (
                             <tr>
-                                <td>{transaction.fromAdress}</td>
-                                <td>{transaction.toAdress}</td>
+                                <td>{transaction.toAddress}</td>
                                 <td>{transaction.amount}</td>
                                 <td>{transaction.hash}</td>
                                 <td>{transaction.timestamp}</td>
@@ -231,7 +268,7 @@ function Account(props) {
                         );
                     })}
                 </tbody>
-            </table>
+            </table>  */}
         </div>
     )
 }

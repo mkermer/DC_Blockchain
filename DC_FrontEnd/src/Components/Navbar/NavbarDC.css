@@ -26,7 +26,7 @@
     }
 }
 
-@media (min-width: 769px){
+/* @media (min-width: 769px){
     .navbar-expand-md{
         
         justify-content: space-between !important;
@@ -35,7 +35,7 @@
 
 .navbar-expand{
     justify-content: space-between !important;
-}
+} */
 
 .NavButtons button{
     margin-right: 20px;
@@ -45,5 +45,6 @@
     border-radius: 50% !important;
     height: 30px;
     width:30px;
-    padding: 0 0 3px 0 !important;
+    padding: 0 0 5px 0 !important;
+    color: white !important;
 }
