@@ -8,6 +8,7 @@ import axios from 'axios';
 import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
+import './Account.css';
 
 
 
@@ -18,6 +19,7 @@ function Account(props) {
     const [toAddressInput, setToAddressInput] = useState("");
     const [amount, setAmount] = useState(0);
     const [fromAddressInput, setFromAddressInput] = useState(props.applicationState.user.publicKey);
+    const [wallet, setWallet] = useState(props.applicationState.user.walletName);
 
     const [variant, setVariant] = useState("success");
     const [showSuccess, setShowSuccess] = useState(false);
@@ -50,7 +52,7 @@ function Account(props) {
         try {
             const thisTransaction = {
                 toAddress: toAddressInput,
-                fromAddress: fromAddressInput,
+                fromAdress: fromAddressInput,
                 amount: amount
 
             }
@@ -152,6 +154,10 @@ function Account(props) {
 
     return (
         <div>
+            <h1>
+                {wallet}
+            </h1>
+
             <h1>Your balance: {balance}</h1>
             <Alert variant={variant} show={showSuccess}>
                 {text}
@@ -209,37 +215,70 @@ function Account(props) {
             <h3>
                 Your Transactions
             </h3>
+            <h5> test </h5>
+
+            <Card className="TransCard" >
+                <Card.Header>Your transactions </Card.Header>
+                {/* <ListGroup variant="flush"> */}
+                    <Row>
+                        <Col md={9} className="TransCol">
+                                    <p>From: {fromAddressInput}</p>
+                        </Col>
+                        <Col md={3}>
+                            
+                                time
+                                {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
+                            
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={9}>
+                            
+                                <p>Hash: hash</p>
+                            
+                        </Col>
+                        <Col md={3}>
+                            
+                                <p> amount </p>
+                            
+                        </Col>
+                    </Row>
+                {/* </ListGroup> */}
+            </Card>
+            
             {transactions.map(transaction => {
-                console.log(transaction.fromAddress)
-                console.log(fromAddressInput)
             return(
-            <Card style={{ width: '18rem' }}>
+            <Card className="TransCard" >
                 <Card.Header>Your transactions </Card.Header>
                 <ListGroup variant="flush">
                     <Row>
-                        <Col>
-                            <ListGroup.Item>
-                                {transaction.fromAddress === fromAddressInput ? (
+                        <Col md={9} className="TransCol">
+                                {transaction.fromAdress === fromAddressInput ? (
                                     <>
                                         <p>To: {transaction.toAddress}</p>
                                     
                                     </>
                                 ) : (
-                                    <p>From: {transaction.fromAddress}</p>
+                                    <p>From: {transaction.fromAdress}</p>
                                 )}
-                            </ListGroup.Item>
                         </Col>
-                        <Col>
-                            {/* <Moment> {transaction.timestamp} </Moment> */}
-                            {transaction.timestamp}
+                        <Col md={3}>
+                            
+                                <Moment unix> {Math.floor(transaction.timestamp/1000)} </Moment>
+                                {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
+                            
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <p>Hash: {transaction.hash}</p>
+                        <Col md={9}>
+                            
+                                <p>Hash: {transaction.hash}</p>
+                            
                         </Col>
-                        <Col>
-                            <p> {transaction.amount} </p>
+                        <Col md={3}>
+                            
+                                <p> {transaction.amount} </p>
+                            
                         </Col>
                     </Row>
                 </ListGroup>

@@ -1,0 +1,11 @@
+.TransCard{
+    width: 100%;
+};
+
+.TransCard .p {
+    border: solid !important;
+};
+
+h5{
+    color:red;
+}
