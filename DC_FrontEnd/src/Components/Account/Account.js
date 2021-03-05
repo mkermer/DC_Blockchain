@@ -224,11 +224,11 @@ function Account(props) {
 
                 <Col md={9} className="AccountRight">
 
-                    <Row>
+                    <Row className="MiningRow">
                         <Col>
                             <div className="Mining">
-                                <h4>Mining</h4>
-                                <h5>Options</h5>
+                                <h3>Mining</h3>
+                                {/* <h5>Options</h5>
                                 <Form>
                                     <Form.Group controlId="nonceOption">
                                         <Form.Label>Starting value for the nonce:(needs to be implemented all his option)<span>*</span></Form.Label>
@@ -246,7 +246,7 @@ function Account(props) {
                                     <br />
                                     <Button >Save options</Button>
                                 </Form>
-                                <br />
+                                <br /> */}
                                 <h5>Do you want to mine?</h5>
                                 <Button onClick={() => setTrig(!trig)} >Mine</Button>
                                 </div>

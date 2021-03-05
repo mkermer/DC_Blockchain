@@ -1,11 +1,16 @@
 /* .Account .AccountRight{
     height: 850px;
 }
-
-.Account .Mining{
-    height: 300px;
-}
 */
+.Account .Mining, .TransCard{
+    border: solid rgba(0, 0, 0, 0.125) 1px;
+    border-radius: 0.25rem;
+}
+
+.Accout .MiningRow{
+    margin-bottom: 30px;
+}
+
 
 .Account .TransCard{
     height: 300px;
