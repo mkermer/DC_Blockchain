@@ -47,7 +47,7 @@ router.route('/getTransactions/:address').get(async (req, res) => {
             const transaction = blocks[i].transactions;
             console.log(transaction.fromAdress);
             for (let j = 0; j < transaction.length; j++) {
-                if (transaction[j].fromAdress === publicKey) {
+                if (transaction[j].fromAdress === publicKey || transaction[j].toAddress === publicKey) {
                     transactions.push(transaction[j]);
                 }
             }
