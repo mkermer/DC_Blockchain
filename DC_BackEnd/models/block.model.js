@@ -18,7 +18,8 @@ const BlockSchema = new Schema({
     timestamp: { type: Date, required: true },
     transactions: [],
     merkleHash: { type: String, required: true },
-    transactionsMined: { type: Boolean }
+    transactionsMined: { type: Boolean },
+    transactionHashes: [],
 })
 
 

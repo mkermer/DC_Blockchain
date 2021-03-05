@@ -20,6 +20,7 @@ function Account(props) {
     const [amount, setAmount] = useState(0);
     const [fromAddressInput, setFromAddressInput] = useState(props.applicationState.user.publicKey);
     const [wallet, setWallet] = useState(props.applicationState.user.walletName);
+    const [rewardedUser, setRewardedUser] = useState("")
 
     const [variant, setVariant] = useState("success");
     const [showSuccess, setShowSuccess] = useState(false);
@@ -86,6 +87,11 @@ function Account(props) {
             setMiningData(arg)
         });
 
+        socket.on('hi', (arg) => {
+            console.log(arg);
+            setRewardedUser(arg);
+        })
+
         socket.off('connect', () => {
             console.log(`I'm connected with the back-end`);
         });
@@ -102,6 +108,34 @@ function Account(props) {
 
     useEffect(() => {
 
+        if (rewardedUser === fromAddressInput) {
+            setText('You have successfully mined the block and get a reward of one DC-Coin')
+            setVariant('success');
+            setTimeout(() => {
+                setText("");
+                setRewardedUser('');
+                setShowSuccess(false)
+            }, 5000)
+        } else if (rewardedUser !== fromAddressInput && rewardedUser !== '') {
+            setText('Another user found the right hash')
+            setTimeout(() => {
+                setText("");
+                setShowSuccess(false)
+                setRewardedUser('');
+            }, 5000)
+        }
+
+
+    })
+
+    const mineBlock = () => {
+        setTrig(!trig)
+        setShowSuccess(true);
+        setText('mine latest Block...');
+        setVariant('warning');
+    }
+
+    useEffect(() => {
         console.log(trig)
         if (trig) {
             console.log('Initiate mining...')
@@ -131,6 +165,7 @@ function Account(props) {
                             hash: tHash,
                             nonce: nonce
                         })
+                        setTrig(false);
                     }
                     nonce += 1
                 }
@@ -248,7 +283,10 @@ function Account(props) {
                                 </Form>
                                 <br /> */}
                                 <h5>Do you want to mine?</h5>
-                                <Button onClick={() => setTrig(!trig)} >Mine</Button>
+                                <Alert variant={variant} show={showSuccess}>
+                                    {text}
+                                </Alert>
+                                <Button onClick={mineBlock} >Mine</Button>
                                 </div>
                         </Col>
                     </Row>
