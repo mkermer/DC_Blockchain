@@ -285,7 +285,7 @@ const myfunc = async (hashParam, nonceParam, transaction, transactionHashes) => 
     transA = [];
     transAHashes = []
 
-    const timestamp = new Date().getTime();
+    const timestamp = Date.now();
     console.log(timestamp);
 
     const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }])
@@ -449,7 +449,7 @@ io.on("connection", (socket) => {
         console.log(testUserFoundHash);
         // all the transactions in this intervall goes to transB, 
 
-        const userFoundHash = `User: ${testUserFoundHash.userPublicKey} found the Hash`;
+        const userFoundHash = testUserFoundHash.userPublicKey;
 
         const redoUserHash = SHA256(
             dataToMine.merkleHash
