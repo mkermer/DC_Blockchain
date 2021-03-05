@@ -9,7 +9,8 @@ import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
 import './Account.css';
-import Icon from '../../Logo/DCoinIcon.svg'
+import Icon from '../../Logo/DCoinIcon.svg';
+
 
 
 function Account(props) {
@@ -187,8 +188,10 @@ function Account(props) {
     }
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
+
     return (
         <div className="Account">
+            
             <Alert variant={variant} show={showSuccess}>
                 {text}
             </Alert>

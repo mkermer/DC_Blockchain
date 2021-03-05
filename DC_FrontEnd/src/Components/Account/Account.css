@@ -2,6 +2,11 @@
     height: 850px;
 }
 */
+
+.Account{
+    background-image: url(../../Logo/DChain_background_transparent.svg);
+}
+
 .Account .Mining, .TransCard{
     border: solid rgba(0, 0, 0, 0.125) 1px;
     border-radius: 0.25rem;

@@ -10,6 +10,7 @@ import Dashboard from './Components/Dashboard/Dashboard';
 import CreateKeys from './Components/Login_Register/CreateKeys';
 import Account from './Components/Account/Account';
 import Footer from './Components/Footer/Footer';
+import transactionOfBlock from './Components/Dashboard/transactionsOfBlock'
 import Page404 from './Page404';
 
 
@@ -28,6 +29,7 @@ function App(props) {
             <Route path="/registerKeys" component={CreateKeys} />
             <Route path="/login" component={Login} />
             <Route path="/account" component={Account} />
+            <Route path="/transactions" component={transactionOfBlock} />
             <Route path="*" component={Page404} />
         </Switch>
       </Container>
