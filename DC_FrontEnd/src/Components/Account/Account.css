@@ -1,11 +1,29 @@
-.TransCard{
-    width: 100%;
+/* .Account .AccountRight{
+    height: 850px;
+}
+
+.Account .Mining{
+    height: 300px;
+}
+*/
+
+.Account .TransCard{
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    
 };
 
-.TransCard .p {
-    border: solid !important;
-};
 
-h5{
-    color:red;
+/* .AccountCard.card{
+    height: 400px !important;
+} */
+
+.Account .KeyNumber{
+    word-break:break-all;
+}
+
+.Account .AccountCard img{
+    float: left;
+    height: 40px;
 }

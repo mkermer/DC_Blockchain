@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import  { Button, Form, Alert, Card, ListGroup, Row, Col } from 'react-bootstrap'
+import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'react-bootstrap'
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
 import './Account.css';
-
+import Icon from '../../Logo/DCoinIcon.svg'
 
 
 function Account(props) {
@@ -153,161 +153,159 @@ function Account(props) {
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
     return (
-        <div>
-            <h1>
-                {wallet}
-            </h1>
-
-            <h1>Your balance: {balance}</h1>
+        <div className="Account">
             <Alert variant={variant} show={showSuccess}>
                 {text}
             </Alert>
 
-            <p>
-                Your public Key:
-            </p>
-            <p>
-                {fromAddressInput}
-            </p>
-            <Form>
-                <Form.Group controlId="textarea">
-                    <Form.Label>To address<span>*</span></Form.Label>
-                    <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
-                    <Form.Text className="text-muted">
-                        The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
-                    </Form.Text>
-                </Form.Group>
-                <Form.Group controlId="textarea">
-                    <Form.Label>Amount<span>*</span></Form.Label>
-                    <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
-                    <Form.Text className="text-muted">
-                        Amount of money, you would like to send!
-                        </Form.Text>
-                </Form.Group>
-                <Button onClick={signTransaction}>Create transaction</Button>
-            </Form>
-            <br />
-            <br />
-            <h4>Minning</h4>
-            <br />
-            <h5>Options</h5>
-            <Form>
-                <Form.Group controlId="nonceOption">
-                    <Form.Label>Starting value for the nonce:(needs to be implemnted all his option)<span>*</span></Form.Label>
-                    <Form.Control placeholder='Need to think' value={0}
-                        type="text" required />
-                    <Form.Text className="text-muted">
-                        Type a number to <strong>start mining</strong>
-                    </Form.Text>
-                </Form.Group>
-                <Button >Random number</Button>
-                <br />
-                <br />
-                <Button >Each iteration a random number</Button>
-                <br />
-                <br />
-                <Button >Save options</Button>
-            </Form>
-            <br />
-            <h5>Do you want to mine?</h5>
-            <Button onClick={() => setTrig(!trig)} >Mine</Button>
+            <Row>
+                <Col md={3}>
+                    
+                    <Card className="AccountCard">
+                        <Card.Body>
+                        <img src={Icon} />
+                            <Card.Title>{wallet}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">{balance} -DC-</Card.Subtitle>
 
-            <h3>
-                Your Transactions
-            </h3>
-            <h5> test </h5>
+                            <Accordion>
+                                <Card>
+                                    <Card.Header>
+                                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                        My Public Key
+                                    </Accordion.Toggle>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey="0">
+                                    <Card.Body>
+                                        <p className="KeyNumber">
+                                            {fromAddressInput}
+                                        </p>
+                                    </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Accordion>
+                        </Card.Body>
 
-            <Card className="TransCard" >
-                <Card.Header>Your transactions </Card.Header>
-                {/* <ListGroup variant="flush"> */}
-                    <Row>
-                        <Col md={9} className="TransCol">
-                                    <p>From: {fromAddressInput}</p>
-                        </Col>
-                        <Col md={3}>
-                            
-                                time
-                                {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
-                            
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={9}>
-                            
-                                <p>Hash: hash</p>
-                            
-                        </Col>
-                        <Col md={3}>
-                            
-                                <p> amount </p>
-                            
-                        </Col>
-                    </Row>
-                {/* </ListGroup> */}
-            </Card>
-            
-            {transactions.map(transaction => {
-            return(
-            <Card className="TransCard" >
-                <Card.Header>Your transactions </Card.Header>
-                <ListGroup variant="flush">
-                    <Row>
-                        <Col md={9} className="TransCol">
-                                {transaction.fromAdress === fromAddressInput ? (
-                                    <>
-                                        <p>To: {transaction.toAddress}</p>
-                                    
-                                    </>
-                                ) : (
-                                    <p>From: {transaction.fromAdress}</p>
-                                )}
-                        </Col>
-                        <Col md={3}>
-                            
-                                <Moment unix> {Math.floor(transaction.timestamp/1000)} </Moment>
-                                {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
-                            
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={9}>
-                            
-                                <p>Hash: {transaction.hash}</p>
-                            
-                        </Col>
-                        <Col md={3}>
-                            
-                                <p> {transaction.amount} </p>
-                            
-                        </Col>
-                    </Row>
-                </ListGroup>
-            </Card>
-            )})}
-            
-            {/* <table>
-                <thead>
-                    <tr>
-                        <th>To</th>
-                        <th>Amount</th>
-                        <th>Hash</th>
-                        <th>Timestamp</th>
+                        <Accordion>
+                            <Card>
+                                <Card.Header>
+                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                    New Transaction
+                                </Accordion.Toggle>
+                                </Card.Header>
+                                <Accordion.Collapse eventKey="0">
+                                <Card.Body>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {transactions.map(transaction => {
-                        return (
-                            <tr>
-                                <td>{transaction.toAddress}</td>
-                                <td>{transaction.amount}</td>
-                                <td>{transaction.hash}</td>
-                                <td>{transaction.timestamp}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>  */}
+                                    <Form>
+                                        <Form.Group controlId="textarea">
+                                            <Form.Label>To address<span>*</span></Form.Label>
+                                            <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
+                                            <Form.Text className="text-muted">
+                                                The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
+                                            </Form.Text>
+                                        </Form.Group>
+                                        <Form.Group controlId="textarea">
+                                            <Form.Label>Amount<span>*</span></Form.Label>
+                                            <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                                            <Form.Text className="text-muted">
+                                                Amount of money, you would like to send!
+                                                </Form.Text>
+                                        </Form.Group>
+                                        <Button onClick={signTransaction}>Create transaction</Button>
+                                    </Form>
+
+                                </Card.Body>
+                                </Accordion.Collapse>
+                            </Card>
+                        </Accordion>
+
+                    </Card>
+
+                </Col>
+
+                <Col md={9} className="AccountRight">
+
+                    <Row>
+                        <Col>
+                            <div className="Mining">
+                                <h4>Mining</h4>
+                                <h5>Options</h5>
+                                <Form>
+                                    <Form.Group controlId="nonceOption">
+                                        <Form.Label>Starting value for the nonce:(needs to be implemented all his option)<span>*</span></Form.Label>
+                                        <Form.Control placeholder='Need to think' value={0}
+                                            type="text" required />
+                                        <Form.Text className="text-muted">
+                                            Type a number to <strong>start mining</strong>
+                                        </Form.Text>
+                                    </Form.Group>
+                                    <Button >Random number</Button>
+                                    <br />
+                                    <br />
+                                    <Button >Each iteration a random number</Button>
+                                    <br />
+                                    <br />
+                                    <Button >Save options</Button>
+                                </Form>
+                                <br />
+                                <h5>Do you want to mine?</h5>
+                                <Button onClick={() => setTrig(!trig)} >Mine</Button>
+                                </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <div className="TransCard">
+                                <h3>
+                                    Your Transactions
+                                </h3>
+
+                                    {transactions.map(transaction => {
+                                    return(
+                                    <Card >
+                                        <Card.Header>Your transactions </Card.Header>
+                                        <ListGroup variant="flush">
+                                            <Row>
+                                                <Col md={9} className="TransCol">
+                                                        {transaction.fromAdress === fromAddressInput ? (
+                                                            <>
+                                                                <p>To: {transaction.toAddress}</p>
+                                                            
+                                                            </>
+                                                        ) : (
+                                                            <p>From: {transaction.fromAdress}</p>
+                                                        )}
+                                                </Col>
+                                                <Col md={3}>
+                                                    
+                                                        <Moment unix> {Math.floor(transaction.timestamp/1000)} </Moment>
+                                                        {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
+                                                    
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col md={9}>
+                                                    
+                                                        <p>Hash: {transaction.hash}</p>
+                                                    
+                                                </Col>
+                                                <Col md={3}>
+                                                    
+                                                        <p> {transaction.amount} </p>
+                                                    
+                                                </Col>
+                                            </Row>
+                                        </ListGroup>
+                                    </Card>
+                                    )})}
+                            </div>
+                        </Col>
+                    </Row>
+                    
+                    
+                    
+                
+                </Col>
+            </Row>
         </div>
     )
 }
