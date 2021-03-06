@@ -9,7 +9,10 @@ import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
 import './Account.css';
-import Icon from '../../Logo/DCoinIcon.svg';
+import Icon from '../../Logo/DCoinIconColor.svg';
+import Loading from './Loading';
+import Copy from './Copy';
+
 
 
 
@@ -191,23 +194,18 @@ function Account(props) {
 
     return (
         <div className="Account">
-            
-            <Alert variant={variant} show={showSuccess}>
-                {text}
-            </Alert>
 
             <Row>
-                <Col md={3}>
-                    
+                <Col xs={12} lg={3} className="AccoutCol" >
                     <Card className="AccountCard">
                         <Card.Body>
-                        <img src={Icon} />
-                            <Card.Title>{wallet}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{balance} -DC-</Card.Subtitle>
-
+                        
+                            <Card.Subtitle className="mb-2 text-muted audiowide">{wallet}</Card.Subtitle>
+                            <Card.Title className="gold audiowide"><img src={Icon} />{balance} </Card.Title>
+                            <br/>
                             <Accordion>
                                 <Card>
-                                    <Card.Header>
+                                    <Card.Header className="gold-background">
                                     <Accordion.Toggle as={Button} variant="link" eventKey="0">
                                         My Public Key
                                     </Accordion.Toggle>
@@ -215,7 +213,7 @@ function Account(props) {
                                     <Accordion.Collapse eventKey="0">
                                     <Card.Body>
                                         <p className="KeyNumber">
-                                            {fromAddressInput}
+                                            <Copy text={fromAddressInput} />
                                         </p>
                                     </Card.Body>
                                     </Accordion.Collapse>
@@ -248,7 +246,7 @@ function Account(props) {
                                                 Amount of money, you would like to send!
                                                 </Form.Text>
                                         </Form.Group>
-                                        <Button onClick={signTransaction}>Create transaction</Button>
+                                        <Button onClick={signTransaction}>Send!</Button>
                                     </Form>
 
                                 </Card.Body>
@@ -260,10 +258,10 @@ function Account(props) {
 
                 </Col>
 
-                <Col md={9} className="AccountRight">
+                <Col xs={12} lg={9} className="AccountRight">
 
                     <Row className="MiningRow">
-                        <Col>
+                        <Col className="AccoutCol">
                             <div className="Mining">
                                 <h3>Mining</h3>
                                 {/* <h5>Options</h5>
@@ -285,24 +283,36 @@ function Account(props) {
                                     <Button >Save options</Button>
                                 </Form>
                                 <br /> */}
-                                <h5>Do you want to mine?</h5>
+                                <br/>
+                                <h5>How does mining work?</h5>
+                                <br/>
+                                    <p>
+                                        Once a miner's computer figures out the correct answer, aka missing numbers, 
+                                        a new block is created and added to the blockchain and the winner earns a block reward*. 
+                                    </p>
+                                    <p>  
+                                        The reward is 1 DCoin and is immediatly added to your balance and shown in your transactions.
+                                    </p>  
+                                    <br/>
+                                    <p> <i>*This is a competition, there is no guarantee that you win DCoins! </i></p>
                                 <Alert variant={variant} show={showSuccess}>
                                     {text}
+                                    {variant === "warning" ? (<Loading/>) : null}
                                 </Alert>
-                                <Button onClick={mineBlock} >Mine</Button>
+                                <Button onClick={mineBlock} >Start Mining!</Button>
                                 </div>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <div className="TransCard">
-                                <h3>
+                        <Col className="AccoutCol">
+                            <div className="TransCards">
+                                <h3 className="TransHeading">
                                     Your Transactions
                                 </h3>
 
                                     {transactions.map(transaction => {
                                     return(
-                                    <Card >
+                                    <Card className="TransCard">
                                         <Card.Header>Your transactions </Card.Header>
                                         <ListGroup variant="flush">
                                             <Row>
@@ -318,9 +328,8 @@ function Account(props) {
                                                 </Col>
                                                 <Col md={3}>
                                                     
-                                                        <Moment unix> {Math.floor(transaction.timestamp/1000)} </Moment>
-                                                        {/* {console.log(Math.floor(transaction.timestamp/1000))} */}
-                                                    
+                                                        <Moment format="MMMM Do YYYY, HH:mm:ss">{transaction.timestamp}</Moment>
+                                                        
                                                 </Col>
                                             </Row>
                                             <Row>
@@ -331,7 +340,8 @@ function Account(props) {
                                                 </Col>
                                                 <Col md={3}>
                                                     
-                                                        <p> {transaction.amount} </p>
+                                                        <p>Amount: {transaction.amount} </p>
+
                                                     
                                                 </Col>
                                             </Row>

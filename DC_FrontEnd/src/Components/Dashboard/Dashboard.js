@@ -158,7 +158,7 @@ const Dashboard = (props) => {
                     {view === false && (
                         <Col  xs={12} md={6} lg={4}>
                         <Card>
-                            <Card.Header><h2>{`Block ${block.id}`}</h2></Card.Header>
+                            <Card.Header className="silver-background"><h2>{`Block ${block.id}`}</h2></Card.Header>
                                 <ListGroup variant="flush">
                                     <ListGroup.Item>
                                         <h4>Hash</h4>
