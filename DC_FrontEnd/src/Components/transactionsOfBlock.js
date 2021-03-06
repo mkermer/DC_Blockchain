@@ -6,7 +6,7 @@ import * as actions from '../actions/app.action';
 
 const DisplayTransactionsOfBlock = (props) => {
     const transactions = props.applicationState.block.transactions;
-
+    //test
     return (
         <div>
 
