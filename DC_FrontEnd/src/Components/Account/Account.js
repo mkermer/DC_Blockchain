@@ -3,7 +3,7 @@ import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'reac
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/app.action';
+import * as actions from '../../actions/app.action';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
@@ -229,10 +229,12 @@ function Account(props) {
                         <Card.Body>
                         
                             <Card.Subtitle className="mb-2 text-muted audiowide">{wallet}</Card.Subtitle>
-                            <Card.Title className="gold audiowide"><img src={Icon} />{balance} </Card.Title>
+                            <Card.Title className="gold audiowide"><img src={Icon} alt="DC"/>{balance} </Card.Title>
+                            
                             <Alert variant={variantTrans} show={showSuccessTrans}>
                                 {textTrans}
                             </Alert>
+
                             <br/>
                             <Accordion>
                                 <Card>
@@ -255,7 +257,7 @@ function Account(props) {
                         <Accordion>
                             <Card>
                                 <Card.Header>
-                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                <Accordion.Toggle  as={Button} variant="link" eventKey="0">
                                     New Transaction
                                 </Accordion.Toggle>
                                 </Card.Header>
@@ -344,7 +346,11 @@ function Account(props) {
                                     {transactions.map(transaction => {
                                     return(
                                     <Card className="TransCard">
-                                        <Card.Header>Your transactions </Card.Header>
+                                        {transaction.fromAdress === fromAddressInput ? (
+                                            <Card.Header className="red">Your transactions </Card.Header>
+                                        ) : (
+                                            <Card.Header className="green">Your transactions </Card.Header>
+                                        )}
                                         <ListGroup variant="flush">
                                             <Row>
                                                 <Col md={9} className="TransCol">
@@ -371,7 +377,7 @@ function Account(props) {
                                                 </Col>
                                                 <Col md={3}>
                                                     
-                                                        <p>Amount: {transaction.amount} </p>
+                                                        <p>Amount: <img src={Icon} alt="DC"/> {transaction.amount} </p>
 
                                                     
                                                 </Col>

@@ -8,7 +8,7 @@ import { FaCube, FaExchangeAlt, FaThList } from 'react-icons/fa';
 import DisplayTransactionsOfBlock from './transactionsOfBlock';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/app.action';
+import * as actions from '../../actions/app.action';
 import { useHistory } from 'react-router-dom';
 
 const Dashboard = (props) => {
@@ -198,9 +198,9 @@ const Dashboard = (props) => {
                         </Card>
                         {/* {show === true ? (
                             <DisplayTransactionsOfBlock transactions={blocks.transactions} />
-                        ) : null}
+                        ) : null} */}
                         </Col>
-                        )} */}
+                        )}
                     </>
                 )
             })}
