@@ -51,6 +51,7 @@ function App(props) {
                 <Route path="/" exact component={Dashboard} /> 
                 <Route path="/registerKeys" component={CreateKeys} />
                 <Route path="/login" component={Login} />
+                <Route path="/transactions" component={transactionOfBlock} />
                 <Route path="*" component={Page404} />
             </Switch>
           </Container>
