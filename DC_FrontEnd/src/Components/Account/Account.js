@@ -3,7 +3,7 @@ import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'reac
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../../actions/app.action';
+import * as actions from '../actions/app.action';
 import axios from 'axios';
 import { io } from "socket.io-client";
 import SHA256 from 'crypto-js/sha256';
@@ -25,10 +25,12 @@ function Account(props) {
     const [fromAddressInput, setFromAddressInput] = useState(props.applicationState.user.publicKey);
     const [wallet, setWallet] = useState(props.applicationState.user.walletName);
     const [rewardedUser, setRewardedUser] = useState("")
-
     const [variant, setVariant] = useState("success");
     const [showSuccess, setShowSuccess] = useState(false);
     const [text, setText] = useState("");
+    const [variantTrans, setVariantTrans] = useState("success");
+    const [showSuccessTrans, setShowSuccessTrans] = useState(false);
+    const [textTrans, setTextTrans] = useState("");
     const [transactions, setTransaction] = useState([]);
     const [trig, setTrig] = useState(false)
 
@@ -66,8 +68,23 @@ function Account(props) {
             const transres = await axios.post(`http://localhost:4000/blocks/update/${fromAddressInput}`, thisTransaction);
             console.log(transres.data);
             const trans = transres.data;
-            setBalance(trans.balance);
-            console.log(transactions)
+            if (trans !== 'The deposit address is not stored on our blockchain!') {
+                const response = await axios.get(`http://localhost:4000/users/${props.applicationState.user._id}`);
+                console.log(response.data);
+                const user = response.data;
+                props.actions.storeUserData(user);
+                setBalance(user.balance);
+                console.log(transactions)
+                setShowSuccessTrans(true);
+                setVariantTrans('success')
+                setTextTrans('success your transaction has been send to ' + toAddressInput);
+            } else {
+                console.log('wrong');
+                setShowSuccessTrans(true);
+                setTextTrans(trans);
+                setVariantTrans('warning')
+            }
+
             // window.location.reload()
         }
         catch (err) {
@@ -94,6 +111,12 @@ function Account(props) {
         socket.on('hi', (arg) => {
             console.log(arg);
             setRewardedUser(arg);
+        })
+
+        socket.on('miningSuccess', (arg) => {
+            console.log(arg);
+            setBalance(arg);
+
         })
 
         socket.off('connect', () => {
@@ -140,12 +163,15 @@ function Account(props) {
     }
 
     useEffect(() => {
+
         console.log(trig)
         if (trig) {
+
             console.log('Initiate mining...')
             //Perform calculaptions for the hash
             console.log('Mining Data: ')
             console.log(miningData)
+
 
             let nonce = 0;
             let control = 0;
@@ -169,11 +195,13 @@ function Account(props) {
                             hash: tHash,
                             nonce: nonce
                         })
+
                         setTrig(false);
                     }
                     nonce += 1
                 }
             }
+
             console.log('End mining...')
         }
     }, [miningData, trig])
@@ -202,6 +230,9 @@ function Account(props) {
                         
                             <Card.Subtitle className="mb-2 text-muted audiowide">{wallet}</Card.Subtitle>
                             <Card.Title className="gold audiowide"><img src={Icon} />{balance} </Card.Title>
+                            <Alert variant={variantTrans} show={showSuccessTrans}>
+                                {textTrans}
+                            </Alert>
                             <br/>
                             <Accordion>
                                 <Card>

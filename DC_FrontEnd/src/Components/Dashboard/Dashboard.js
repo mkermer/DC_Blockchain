@@ -6,12 +6,17 @@ import Cube from './Cube';
 import Moment from 'react-moment';
 import { FaCube, FaExchangeAlt, FaThList } from 'react-icons/fa';
 import DisplayTransactionsOfBlock from './transactionsOfBlock';
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../actions/app.action';
+import { useHistory } from 'react-router-dom';
 
 const Dashboard = (props) => {
     const [blocks, setBlocks] = useState([]);
     const [show, setShow] = useState(false);
     const [view, setView] = useState(true);
+
+    const history = useHistory();
 
     useEffect(() => {
         getBlocks();
@@ -61,6 +66,10 @@ const Dashboard = (props) => {
             <Row>
 
             {blocks.map(block => {
+                const showTransactions = () => {
+                    props.actions.storeLatestBlockData(block);
+                    history.push('/transactions');
+                }
                 let contentFront =  <>
                                         <Row>
                                             <Col xs={12}>
@@ -187,11 +196,11 @@ const Dashboard = (props) => {
                                 </ListGroup.Item>
                                 </ListGroup>
                         </Card>
-                        {show === true ? (
+                        {/* {show === true ? (
                             <DisplayTransactionsOfBlock transactions={blocks.transactions} />
                         ) : null}
                         </Col>
-                        )}
+                        )} */}
                     </>
                 )
             })}
@@ -207,4 +216,6 @@ const Dashboard = (props) => {
 }
 
 
-export default Dashboard;
+const mapStateToProps = state => ({ applicationState: state });
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) });
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -113,73 +113,77 @@ app.post("/blocks/update/:address", async (req, res) => {
                 depositUser = users[i]
             }
         }
+        if (depositUser !== "") {
+            let depositBalance = depositUser.balance;
 
-        let depositBalance = depositUser.balance;
-
-        // calculate 
-        if (amount > withdrawBalance) {
-            res.json('invalid transaction');
-        } else {
-            withdrawBalance = withdrawBalance - amount;
-            depositBalance = depositBalance + amount;
-        }
-
-        User.findById(withdrawUser._id)
-            .then(user => {
-                user.publicKey = withdrawUser.publicKey;
-                user.privateKey = withdrawUser.privateKey;
-                user.balance = withdrawBalance;
-
-
-                user.save()
-                    .then(() => res.json(user))
-                    .catch(err => res.status(400).json('Error: ' + err));
-            })
-            .catch(err => res.status(400).json('Error: ' + err));
-
-
-        User.findById(depositUser._id)
-            .then(user => {
-                user.publicKey = depositUser.publicKey;
-                user.privateKey = depositUser.privateKey;
-                user.balance = depositBalance;
-
-
-                user.save()
-
-            })
-            .catch(err => res.status(400).json('Error: ' + err));
-
-
-        const timestampNow = Date.now()
-        const tHash = SHA256(req.body.toAddress + req.body.fromAdress + req.body.amount + timestampNow).toString();
-        const newTrans = { ...req.body, hash: tHash, timestamp: timestampNow }
-        console.log(newTrans)
-        transA = newTrans
-        transAHashes = tHash
-        res.status(200)
-        res.json(withdrawUser)
-
-
-        const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }]);
-        const latestBlock = block[0];
-
-        Block.findById(latestBlock._id)
-            .then(block => {
-                block.id = latestBlock.id,
-                    block.hash = latestBlock.hash,
-                    block.previousHash = latestBlock.previousHash,
-                    block.nonce = latestBlock.nonce,
-                    block.timestamp = latestBlock.timestamp,
-                    block.transactions = [...latestBlock.transactions, transA]
-                block.merkleHash = latestBlock.merkleHash,
-                    transactionsMined = latestBlock.transactionsMined
-                block.transactionHashes = [...latestBlock.transactionHashes, transAHashes]
-                block.save()
-
+            // calculate 
+            if (amount > withdrawBalance) {
+                res.json('invalid transaction');
+            } else {
+                withdrawBalance = withdrawBalance - amount;
+                depositBalance = depositBalance + amount;
             }
 
-            )
+            User.findById(withdrawUser._id)
+                .then(user => {
+                    user.publicKey = withdrawUser.publicKey;
+                    user.privateKey = withdrawUser.privateKey;
+                    user.balance = withdrawBalance;
+
+
+                    user.save()
+                        .then(() => res.json(user))
+                        .catch(err => res.status(400).json('Error: ' + err));
+                })
+                .catch(err => res.status(400).json('Error: ' + err));
+
+
+            User.findById(depositUser._id)
+                .then(user => {
+                    user.publicKey = depositUser.publicKey;
+                    user.privateKey = depositUser.privateKey;
+                    user.balance = depositBalance;
+
+
+                    user.save()
+
+                })
+                .catch(err => res.status(400).json('Error: ' + err));
+
+
+            const timestampNow = Date.now()
+            const tHash = SHA256(req.body.toAddress + req.body.fromAdress + req.body.amount + timestampNow).toString();
+            const newTrans = { ...req.body, hash: tHash, timestamp: timestampNow }
+            console.log(newTrans)
+            transA = newTrans
+            transAHashes = tHash
+            res.status(200)
+            res.json(withdrawUser)
+
+
+            const block = await Block.aggregate([{ $sort: { id: -1 } }, { $limit: 1 }]);
+            const latestBlock = block[0];
+
+            Block.findById(latestBlock._id)
+                .then(block => {
+                    block.id = latestBlock.id,
+                        block.hash = latestBlock.hash,
+                        block.previousHash = latestBlock.previousHash,
+                        block.nonce = latestBlock.nonce,
+                        block.timestamp = latestBlock.timestamp,
+                        block.transactions = [...latestBlock.transactions, transA]
+                    block.merkleHash = latestBlock.merkleHash,
+                        transactionsMined = latestBlock.transactionsMined
+                    block.transactionHashes = [...latestBlock.transactionHashes, transAHashes]
+                    block.save()
+
+                }
+
+                )
+        } else {
+            res.json('The deposit address is not stored on our blockchain!');
+        }
+
 
     } catch (err) {
         console.log(err)
