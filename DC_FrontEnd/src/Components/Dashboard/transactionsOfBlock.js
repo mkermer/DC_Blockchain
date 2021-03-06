@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/app.action';
+import * as actions from '../../actions/app.action';
 
 
 const DisplayTransactionsOfBlock = (props) => {
