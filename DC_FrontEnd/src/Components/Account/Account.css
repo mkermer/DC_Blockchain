@@ -85,6 +85,8 @@
     
 };
 
+/* Dear Code Reviewer, I have no clue why this is needed twice, just do not remove the duplicate and everything works just fine :'D */
+
 div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col div.TransCards h3.TransHeadings{
     box-shadow: 1px 1px 3px rgb(214, 214, 214);
     border-top-left-radius: 0.25rem;
@@ -97,6 +99,24 @@ div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col d
     position: sticky;
     top: 0;
     z-index: 1;
+}
+
+.TransHeadings{
+    box-shadow: 1px 1px 3px rgb(214, 214, 214);
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom: 1px rgba(0, 0, 0, 0.125) solid;
+    padding: 20px 0;
+    margin-bottom: 15px !important;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.inline{
+    display: inline;
 }
 
 .Account .TransCard{

@@ -10,9 +10,11 @@ import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
 import './Account.css';
 import Icon from '../../Logo/DCoinIconColor.svg';
+import { FaCaretDown, FaCaretUp, FaFilter } from 'react-icons/fa';
 // import Loading from './Loading';
 import Copy from './Copy';
 import Spinning from './Spinning'
+import moment from 'moment'
 
 
 
@@ -35,6 +37,7 @@ function Account(props) {
     const [transactions, setTransaction] = useState([]);
     const [trig, setTrig] = useState(false);
     const [open, setOpen] = useState(false);
+    const [filter, setFilter] = useState(0);
 
     const [miningData, setMiningData] = useState(
         {
@@ -232,6 +235,59 @@ function Account(props) {
         }
     }
 
+    const day = (timestamp) => {
+        let today = moment().format('DDMMYYYY');
+        let transTimestamp = moment(timestamp).format('DDMMYYYY')
+        if (transTimestamp === today){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const week = (timestamp) => {
+        let week = moment().format('wYYYY');
+        let transTimestamp = moment(timestamp).format('wYYYY')
+        console.log(transTimestamp)
+        if (transTimestamp === week){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const month = (timestamp) => {
+        let month = moment().format('MMYYYY');
+        let transTimestamp = moment(timestamp).format('MMYYYY')
+        if (transTimestamp === month){
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const all = (timestamp) => {
+        return true;
+    };
+
+    
+    const transFilter = (timestamp, n) => {
+        switch(n){
+            case "1":
+                return(month(timestamp));
+            case "2":
+                return(week(timestamp));
+            case "3":
+                return(day(timestamp));
+            default:
+                return(all(timestamp));
+        }
+    }
+
+    const handleChange = (e) => {
+        setFilter(e.target.value)
+    }
+
     return (
         <div className="Account"> 
             
@@ -357,7 +413,19 @@ function Account(props) {
                                     Your Transactions
                                 </h3>
 
+                                <Form>
+                                    <Form.Group controlId="exampleForm.ControlSelect1">
+                                        <Form.Label>Filter</Form.Label>
+                                        <Form.Control as="select" onChange={handleChange} value={filter}>
+                                        <option value={0} selected>View All</option> 
+                                        <option value={1}>This Month</option>
+                                        <option value={2}>This Week</option>
+                                        <option value={3}>Today</option>
+                                        </Form.Control>
+                                    </Form.Group>
+                                </Form>
                                     {transactions.map(transaction => {
+                                        if(transFilter(transaction.timestamp,filter)){
                                         let shortKey = [];
                                         let longKey = []; 
                                         transaction.fromAdress === fromAddressInput ? (
@@ -368,9 +436,9 @@ function Account(props) {
                                             <Card.Header className="red">
                                                 <Row className="header">
                                                     <Col md={10}>
-                                                        <p className="KeyNumber">To: {shortKey}</p> 
+                                                        <p className="KeyNumber inline">To: {shortKey}</p> 
                                                         <Collapse in={open}>
-                                                            <div id="long-key">
+                                                            <div id="long-key" className="inline">
                                                             {longKey}
                                                             </div>
                                                         </Collapse>
@@ -378,8 +446,13 @@ function Account(props) {
                                                             onClick={() => setOpen(!open)}
                                                             aria-controls="long-key"
                                                             aria-expanded={open}
+                                                            variant="link"
+                                                            style={{width: "30px", margin:"0", padding: "0 0 10px 0"}}
                                                         >
-                                                            click
+                                                            {open === true ? (
+                                                                <FaCaretUp/>
+                                                            ): (<FaCaretDown/>)}
+                                                            
                                                         </Button>
                                                     </Col>
                                                     <Col md={2}>
@@ -391,7 +464,25 @@ function Account(props) {
                                             <Card.Header className="green">
                                                 <Row className="header">
                                                     <Col md={10}>
-                                                        <p className="KeyNumber">From: {transaction.fromAdress}</p>
+                                                        <p className="KeyNumber inline">From: {shortKey}</p>
+
+                                                        {shortKey.length > 10 ? (
+                                                            <>
+                                                                <Collapse in={open}>
+                                                                    <div id="long-key" className="inline">
+                                                                    {longKey}
+                                                                    </div>
+                                                                </Collapse>
+                                                                <Button
+                                                                    onClick={() => setOpen(!open)}
+                                                                    aria-controls="long-key"
+                                                                    aria-expanded={open}
+                                                                >
+                                                                    click
+                                                                </Button>
+                                                            </>
+                                                            ): null}
+                                                        
                                                     </Col>
                                                     <Col md={2}>
                                                         <p><img src={Icon} alt="DC"/> {transaction.amount} </p>
@@ -411,7 +502,7 @@ function Account(props) {
                                             </Row>
                                         </ListGroup>
                                     </Card>
-                                    )})}
+                                    )}})}
                             </div>
                         </Col>
                     </Row>
