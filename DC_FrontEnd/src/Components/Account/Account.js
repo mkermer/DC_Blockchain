@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'react-bootstrap'
+import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion, Collapse } from 'react-bootstrap'
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -33,7 +33,8 @@ function Account(props) {
     const [showSuccessTrans, setShowSuccessTrans] = useState(false);
     const [textTrans, setTextTrans] = useState("");
     const [transactions, setTransaction] = useState([]);
-    const [trig, setTrig] = useState(false)
+    const [trig, setTrig] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const [miningData, setMiningData] = useState(
         {
@@ -221,8 +222,18 @@ function Account(props) {
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
 
+    const keyExpand = (fromAdress, shortKey, longKey) => {
+        
+        for (let i = 0; i < 10 ; i++){
+            shortKey.push(fromAdress[i])
+        }
+        for (let j = 10; j < fromAdress.length ; j++){
+            longKey.push(fromAdress[j])
+        }
+    }
+
     return (
-        <div className="Account">
+        <div className="Account"> 
             
             <Row>
                 <Col xs={12} lg={4} className="AccoutCol" >
@@ -342,18 +353,34 @@ function Account(props) {
                         <Col className="AccoutCol">
 {/* *******************************************Transactions********************************************** */}
                             <div className="TransCards">
-                                <h3 className="TransHeading">
+                                <h3 className="TransHeadings">
                                     Your Transactions
                                 </h3>
 
                                     {transactions.map(transaction => {
+                                        let shortKey = [];
+                                        let longKey = []; 
+                                        transaction.fromAdress === fromAddressInput ? (
+                                        keyExpand(transaction.toAddress, shortKey, longKey)) : (keyExpand(transaction.fromAdress, shortKey, longKey))
                                     return(
                                     <Card className="TransCard">
                                         {transaction.fromAdress === fromAddressInput ? (
                                             <Card.Header className="red">
                                                 <Row className="header">
                                                     <Col md={10}>
-                                                        <p className="KeyNumber">To: {transaction.toAddress}</p> 
+                                                        <p className="KeyNumber">To: {shortKey}</p> 
+                                                        <Collapse in={open}>
+                                                            <div id="long-key">
+                                                            {longKey}
+                                                            </div>
+                                                        </Collapse>
+                                                        <Button
+                                                            onClick={() => setOpen(!open)}
+                                                            aria-controls="long-key"
+                                                            aria-expanded={open}
+                                                        >
+                                                            click
+                                                        </Button>
                                                     </Col>
                                                     <Col md={2}>
                                                         <p><img src={Icon} alt="DC"/> {transaction.amount} </p>

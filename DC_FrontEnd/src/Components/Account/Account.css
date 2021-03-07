@@ -13,11 +13,11 @@
     width: 100%;
 }
 
-/* .AccountCol{
+.AccoutCol{
     margin-bottom: 40px;
-} */
+}
 
-.AccoutCol.col-lg-3.col-12{
+.AccoutCol.col-lg-4.col-12{
     margin-bottom: 40px;
 }
 
@@ -85,7 +85,7 @@
     
 };
 
-.Account .TransHeading{
+div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col div.TransCards h3.TransHeadings{
     box-shadow: 1px 1px 3px rgb(214, 214, 214);
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
