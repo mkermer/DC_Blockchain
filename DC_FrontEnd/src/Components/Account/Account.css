@@ -1,63 +1,6 @@
-/* .Account .AccountRight{
-    height: 850px;
-}
-*/
-
 .Account{
     background-image: url(../../Logo/DChain_background_transparent.svg);
     padding: 80px !important;
-}
-
-.Account .Mining, .TransCards{
-    border: solid rgba(0, 0, 0, 0.125) 1px;
-    border-radius: 0.25rem;
-    background-color: white;
-    box-shadow: 1px 1px 5px 5px  rgb(214, 214, 214);
-}
-
-.Account .Mining {
-    padding: 15px;
-}
-
-.Accout .MiningRow{
-    margin-bottom: 30px;
-}
-
-
-.Account .TransCards{
-    height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    
-};
-
-/* ::-webkit-scrollbar {
-    width: 3px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-  } */
-
-
-/* .AccountCard.card{
-    height: 400px !important;
-} */
-
-.Account .KeyNumber{
-    word-break:break-all;
-}
-
-.Account .AccountCard{
-    box-shadow: 1px 1px 5px 5px rgb(214, 214, 214);
 }
 
 .Account img{
@@ -66,14 +9,8 @@
     margin-right: 5px;
 }
 
-.Account .AccountCard .card-title{
-    font-size: 30px;
-    text-align: center;
-    /* margin-bottom: 50px; */
-}
-
-.Account .AccountCard .card-subtitle{
-    text-align: center;
+.Account button{
+    width: 100%;
 }
 
 /* .AccountCol{
@@ -87,6 +24,66 @@
 .AccoutCol.col {
     margin-bottom: 40px;
 }
+
+.Account .Mining, .TransCards{
+    border: solid rgba(0, 0, 0, 0.125) 1px;
+    border-radius: 0.25rem;
+    background-color: white;
+    box-shadow: 1px 1px 5px 5px  rgb(214, 214, 214);
+}
+
+/* *******************************************AccountCard********************************************** */
+
+.Account .KeyNumber{
+    word-break:break-all;
+}
+
+.Account .AccountCard{
+    box-shadow: 1px 1px 5px 5px rgb(214, 214, 214);
+}
+
+.Account .AccountCard .card-title{
+    font-size: 30px;
+    text-align: center;
+    /* margin-bottom: 50px; */
+}
+
+.Account .AccountCard .card-subtitle{
+    text-align: center;
+}
+
+.Account .AccountCard .card-header{
+    height: 2rem;
+    padding: 0 !important;
+}
+
+.Account .AccountCard button{
+    padding: 0 !important;
+    color: #343a40;
+    background-color: transparent;
+}
+
+
+/* *******************************************New Transaction********************************************** */
+
+/* *******************************************Mining********************************************** */
+
+.Account .Mining {
+    padding: 15px;
+}
+
+.Accout .MiningRow{
+    margin-bottom: 30px;
+}
+
+/* *******************************************Transactions********************************************** */
+
+.Account .TransCards{
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+};
 
 .Account .TransHeading{
     box-shadow: 1px 1px 3px rgb(214, 214, 214);
@@ -106,20 +103,6 @@
     margin: 15px;
 }
 
-.Account button{
-    width: 100%;
-}
-
-.Account .AccountCard .card-header{
-    height: 2rem;
-    padding: 0 !important;
-}
-
-.Account .AccountCard button{
-    padding: 0 !important;
-    color: #343a40;
-    background-color: transparent;
-}
 
 .Account .red{
     background-color: rgba(255, 0, 0, 0.1);
@@ -128,3 +111,36 @@
 .Account .green{
     background-color: rgba(5, 172, 5, 0.1);
 }
+
+.Account .header{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* ::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  } */
+
+
+
+
+
+
+
+
+
+
+
+

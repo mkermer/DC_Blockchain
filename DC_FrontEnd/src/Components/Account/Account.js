@@ -10,8 +10,9 @@ import SHA256 from 'crypto-js/sha256';
 import Moment from 'react-moment';
 import './Account.css';
 import Icon from '../../Logo/DCoinIconColor.svg';
-import Loading from './Loading';
+// import Loading from './Loading';
 import Copy from './Copy';
+import Spinning from './Spinning'
 
 
 
@@ -222,9 +223,10 @@ function Account(props) {
 
     return (
         <div className="Account">
-
+            
             <Row>
-                <Col xs={12} lg={3} className="AccoutCol" >
+                <Col xs={12} lg={4} className="AccoutCol" >
+{/* *******************************************AccountCard********************************************** */}
                     <Card className="AccountCard">
                         <Card.Body>
                         
@@ -253,7 +255,7 @@ function Account(props) {
                                 </Card>
                             </Accordion>
                         </Card.Body>
-
+{/* *******************************************New Transaction********************************************** */}
                         <Accordion>
                             <Card>
                                 <Card.Header>
@@ -267,7 +269,7 @@ function Account(props) {
                                     <Form>
                                         <Form.Group controlId="textarea">
                                             <Form.Label>To address<span>*</span></Form.Label>
-                                            <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
+                                            <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} as="textarea" rows={6} required />
                                             <Form.Text className="text-muted">
                                                 The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
                                             </Form.Text>
@@ -291,8 +293,8 @@ function Account(props) {
 
                 </Col>
 
-                <Col xs={12} lg={9} className="AccountRight">
-
+                <Col xs={12} lg={8} className="AccountRight">
+{/* *******************************************Mining********************************************** */}
                     <Row className="MiningRow">
                         <Col className="AccoutCol">
                             <div className="Mining">
@@ -330,7 +332,7 @@ function Account(props) {
                                     <p> <i>*This is a competition, there is no guarantee that you win DCoins! </i></p>
                                 <Alert variant={variant} show={showSuccess}>
                                     {text}
-                                    {variant === "warning" ? (<Loading/>) : null}
+                                    {variant === "warning" ? <Spinning/> : null}
                                 </Alert>
                                 <Button onClick={mineBlock} >Start Mining!</Button>
                                 </div>
@@ -338,6 +340,7 @@ function Account(props) {
                     </Row>
                     <Row>
                         <Col className="AccoutCol">
+{/* *******************************************Transactions********************************************** */}
                             <div className="TransCards">
                                 <h3 className="TransHeading">
                                     Your Transactions
@@ -347,39 +350,36 @@ function Account(props) {
                                     return(
                                     <Card className="TransCard">
                                         {transaction.fromAdress === fromAddressInput ? (
-                                            <Card.Header className="red">Your transactions </Card.Header>
+                                            <Card.Header className="red">
+                                                <Row className="header">
+                                                    <Col md={10}>
+                                                        <p className="KeyNumber">To: {transaction.toAddress}</p> 
+                                                    </Col>
+                                                    <Col md={2}>
+                                                        <p><img src={Icon} alt="DC"/> {transaction.amount} </p>
+                                                    </Col>
+                                                </Row>
+                                            </Card.Header>
                                         ) : (
-                                            <Card.Header className="green">Your transactions </Card.Header>
+                                            <Card.Header className="green">
+                                                <Row className="header">
+                                                    <Col md={10}>
+                                                        <p className="KeyNumber">From: {transaction.fromAdress}</p>
+                                                    </Col>
+                                                    <Col md={2}>
+                                                        <p><img src={Icon} alt="DC"/> {transaction.amount} </p>
+                                                    </Col>
+                                                </Row>
+                                                
+                                            </Card.Header>
                                         )}
                                         <ListGroup variant="flush">
                                             <Row>
-                                                <Col md={9} className="TransCol">
-                                                        {transaction.fromAdress === fromAddressInput ? (
-                                                            <>
-                                                                <p>To: {transaction.toAddress}</p>
-                                                            
-                                                            </>
-                                                        ) : (
-                                                            <p>From: {transaction.fromAdress}</p>
-                                                        )}
+                                                <Col md={6} className="TransCol">
+                                                    <Moment format="MMMM Do YYYY, HH:mm">{transaction.timestamp}</Moment>
                                                 </Col>
-                                                <Col md={3}>
-                                                    
-                                                        <Moment format="MMMM Do YYYY, HH:mm:ss">{transaction.timestamp}</Moment>
-                                                        
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col md={9}>
-                                                    
-                                                        <p>Hash: {transaction.hash}</p>
-                                                    
-                                                </Col>
-                                                <Col md={3}>
-                                                    
-                                                        <p>Amount: <img src={Icon} alt="DC"/> {transaction.amount} </p>
-
-                                                    
+                                                <Col md={6}>
+                                                    <p>Hash: {transaction.hash}</p>
                                                 </Col>
                                             </Row>
                                         </ListGroup>

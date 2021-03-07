@@ -143,7 +143,8 @@ const Dashboard = (props) => {
                                                     <DisplayTransactionsOfBlock transactions={blocks.transactions} />
                                                 ) : null} */}
                                                 {/* <Button size="sm">Show all</Button> */}
-                                                <a href="/transactions" className="time">Show all Transactions</a>
+                                                {/* <a href="/transactions" className="time">Show Transactions</a> */}
+                                                <Button className="time" variant="link" onClick={showTransactions}>Show Transactions</Button>
                                             </Col>
                                         </Row>
                                     </>;
