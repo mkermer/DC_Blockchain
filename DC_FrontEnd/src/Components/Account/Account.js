@@ -398,8 +398,8 @@ function Account(props) {
                                     <br/>
                                     <p> <i>*This is a competition, there is no guarantee that you win DCoins! </i></p>
                                 <Alert variant={variant} show={showSuccess}>
-                                    {text}
                                     {variant === "warning" ? <Spinning/> : null}
+                                    {text}
                                 </Alert>
                                 <Button onClick={mineBlock} >Start Mining!</Button>
                                 </div>
@@ -409,21 +409,22 @@ function Account(props) {
                         <Col className="AccoutCol">
 {/* *******************************************Transactions********************************************** */}
                             <div className="TransCards">
-                                <h3 className="TransHeadings">
-                                    Your Transactions
-                                </h3>
+                                <div className="TransHeadings">
+                                    <h3>Your Transactions</h3>
 
-                                <Form>
-                                    <Form.Group controlId="exampleForm.ControlSelect1">
-                                        <Form.Label>Filter</Form.Label>
-                                        <Form.Control as="select" onChange={handleChange} value={filter}>
-                                        <option value={0} selected>View All</option> 
-                                        <option value={1}>This Month</option>
-                                        <option value={2}>This Week</option>
-                                        <option value={3}>Today</option>
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Form>
+                                    <Form className="filters">
+                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                            <Form.Control as="select" onChange={handleChange} value={filter}>
+                                            <option value={0} selected>View All</option> 
+                                            <option value={1}>This Month</option>
+                                            <option value={2}>This Week</option>
+                                            <option value={3}>Today</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Form>
+                                </div>
+
+                                
                                     {transactions.map(transaction => {
                                         if(transFilter(transaction.timestamp,filter)){
                                         let shortKey = [];
@@ -435,7 +436,7 @@ function Account(props) {
                                         {transaction.fromAdress === fromAddressInput ? (
                                             <Card.Header className="red">
                                                 <Row className="header">
-                                                    <Col md={10}>
+                                                    <Col md={10} className="Colhead">
                                                         <p className="KeyNumber inline">To: {shortKey}</p> 
                                                         <Collapse in={open}>
                                                             <div id="long-key" className="inline">
@@ -455,7 +456,7 @@ function Account(props) {
                                                             
                                                         </Button>
                                                     </Col>
-                                                    <Col md={2}>
+                                                    <Col md={2} className="Colhead">
                                                         <p><img src={Icon} alt="DC"/> {transaction.amount} </p>
                                                     </Col>
                                                 </Row>
@@ -463,7 +464,7 @@ function Account(props) {
                                         ) : (
                                             <Card.Header className="green">
                                                 <Row className="header">
-                                                    <Col md={10}>
+                                                    <Col md={10} className="Colhead">
                                                         <p className="KeyNumber inline">From: {shortKey}</p>
 
                                                         {shortKey.length > 10 ? (
@@ -484,7 +485,7 @@ function Account(props) {
                                                             ): null}
                                                         
                                                     </Col>
-                                                    <Col md={2}>
+                                                    <Col md={2} className="Colhead">
                                                         <p><img src={Icon} alt="DC"/> {transaction.amount} </p>
                                                     </Col>
                                                 </Row>
@@ -493,11 +494,20 @@ function Account(props) {
                                         )}
                                         <ListGroup variant="flush">
                                             <Row>
-                                                <Col md={6} className="TransCol">
-                                                    <Moment format="MMMM Do YYYY, HH:mm">{transaction.timestamp}</Moment>
+                                                <Col md={2} className="TransCol">
+                                                    <Moment format="MMM">{transaction.timestamp}</Moment>
+                                                    <br/>
+                                                    <Moment format="DD">{transaction.timestamp}</Moment>
+                                                    <br/>
+                                                    <span className="year"><Moment format="YYYY">{transaction.timestamp}</Moment></span>
+                                                                                                        
                                                 </Col>
-                                                <Col md={6}>
-                                                    <p>Hash: {transaction.hash}</p>
+                                                <Col md={3} className="TransCol">
+                                                    <Moment format="HH:mm">{transaction.timestamp}</Moment>
+                                                </Col>
+                                                <Col md={2}></Col>
+                                                <Col md={5}  className="TransColHash">
+                                                    <p title="Hash">{transaction.hash}</p>
                                                 </Col>
                                             </Row>
                                         </ListGroup>

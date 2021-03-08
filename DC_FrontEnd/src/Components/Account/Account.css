@@ -79,7 +79,7 @@
 /* *******************************************Transactions********************************************** */
 
 .Account .TransCards{
-    height: 500px;
+    height: 700px;
     overflow-y: auto;
     overflow-x: hidden;
     
@@ -87,7 +87,7 @@
 
 /* Dear Code Reviewer, I have no clue why this is needed twice, just do not remove the duplicate and everything works just fine :'D */
 
-div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col div.TransCards h3.TransHeadings{
+div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col div.TransCards div.TransHeadings h3{
     box-shadow: 1px 1px 3px rgb(214, 214, 214);
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
@@ -123,6 +123,27 @@ div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col d
     margin: 15px;
 }
 
+.Account .TransCol{
+    text-align: center;
+    font-weight: bold;
+    align-self: center;
+    letter-spacing: 3px;
+}
+
+.Account .TransColHash{
+    text-align: justify;
+    align-self: center;
+}
+
+.Account .TransColHash p{
+    margin: 10px 20px 10px 0 !important;
+}
+
+.TransCol .year{
+    font-size: 12px;
+    font-weight: 500;
+    word-break: keep-all;
+}
 
 .Account .red{
     background-color: rgba(255, 0, 0, 0.1);
@@ -135,6 +156,19 @@ div.Account div.row div.AccountRight.col-lg-8.col-12 div.row div.AccoutCol.col d
 .Account .header{
     font-size: 20px;
     font-weight: bold;
+}
+
+.Account .Colhead{
+    align-self: center;
+}
+
+.Account .Colhead p{
+    margin-bottom: 0 !important;
+}
+
+.Account .filters{
+    width: 80%;
+    margin: 25px auto 0 auto;
 }
 
 /* ::-webkit-scrollbar {
