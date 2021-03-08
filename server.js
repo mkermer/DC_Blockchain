@@ -19,7 +19,7 @@ connection.once('open', () => {
 })
 
 const app = express();
-// const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 require('dotenv').config();
 
@@ -469,7 +469,7 @@ app.get('/', (req, res) => {
     res.send('Hello World')
 })
 
-// httpServer.listen(port, () => {
-//     console.log(`Server is running on ${port}`);
-// })
+httpServer.listen(port, () => {
+    console.log(`Server is running on ${port}`);
+})
 
