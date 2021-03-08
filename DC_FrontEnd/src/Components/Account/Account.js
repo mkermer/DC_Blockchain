@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'react-bootstrap'
+import { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion } from 'react-bootstrap'
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,17 +12,18 @@ import './Account.css';
 import Icon from '../../Logo/DCoinIconColor.svg';
 import Loading from './Loading';
 import Copy from './Copy';
-
+import config from '../../config/config';
 
 
 
 function Account(props) {
-
+    //balance
     const [balance, setBalance] = useState(props.applicationState.user.balance);
-
+    //sending transactions
     const [toAddressInput, setToAddressInput] = useState("");
     const [amount, setAmount] = useState(0);
     const [fromAddressInput, setFromAddressInput] = useState(props.applicationState.user.publicKey);
+
     const [wallet, setWallet] = useState(props.applicationState.user.walletName);
     const [rewardedUser, setRewardedUser] = useState("")
     const [variant, setVariant] = useState("success");
@@ -65,11 +66,11 @@ function Account(props) {
             }
 
             console.log(thisTransaction);
-            const transres = await axios.post(`http://localhost:4000/blocks/update/${fromAddressInput}`, thisTransaction);
+            const transres = await axios.post(config.baseUrl + `/blocks/update/${fromAddressInput}`, thisTransaction);
             console.log(transres.data);
             const trans = transres.data;
             if (trans !== 'The deposit address is not stored on our blockchain!') {
-                const response = await axios.get(`http://localhost:4000/users/${props.applicationState.user._id}`);
+                const response = await axios.get(config.baseUrl + `/users/${props.applicationState.user._id}`);
                 console.log(response.data);
                 const user = response.data;
                 props.actions.storeUserData(user);
@@ -92,7 +93,7 @@ function Account(props) {
         }
     }
 
-    const SERVER = "http://localhost:4000";
+    const SERVER = config.baseUrl;
     const socket = io(SERVER);
 
     useEffect(() => {
@@ -108,14 +109,21 @@ function Account(props) {
             setMiningData(arg)
         });
 
-        socket.on('hi', (arg) => {
+        socket.on('hi', async (arg) => {
             console.log(arg);
             setRewardedUser(arg);
+
+            const response = await axios.get(config.baseUrl + `/users/${props.applicationState.user._id}`);
+            console.log(response.data);
+            const user = response.data;
+            props.actions.storeUserData(user);
         })
 
         socket.on('miningSuccess', (arg) => {
             console.log(arg);
+
             setBalance(arg);
+
 
         })
 
@@ -213,9 +221,11 @@ function Account(props) {
     }, [setTransaction])
 
     const getTransactions = async () => {
-        const response = await axios.get(`http://localhost:4000/users/getTransactions/${fromAddressInput}`)
-        // console.log(response.data);
-        setTransaction(response.data)
+        const response = await axios.get(config.baseUrl + `/users/getTransactions/${fromAddressInput}`)
+        const transactionsRaw = response.data;
+        const transactionsReverse = transactionsRaw.map(item => item).reverse();
+
+        setTransaction(transactionsReverse);
     }
     //   2 - Display balance by doing a http request that updates every 10-60 sec
 
@@ -227,28 +237,28 @@ function Account(props) {
                 <Col xs={12} lg={3} className="AccoutCol" >
                     <Card className="AccountCard">
                         <Card.Body>
-                        
+
                             <Card.Subtitle className="mb-2 text-muted audiowide">{wallet}</Card.Subtitle>
-                            <Card.Title className="gold audiowide"><img src={Icon} alt="DC"/>{balance} </Card.Title>
-                            
+                            <Card.Title className="gold audiowide"><img src={Icon} alt="DC" />{balance} </Card.Title>
+
                             <Alert variant={variantTrans} show={showSuccessTrans}>
                                 {textTrans}
                             </Alert>
 
-                            <br/>
+                            <br />
                             <Accordion>
                                 <Card>
                                     <Card.Header className="gold-background">
-                                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                        My Public Key
+                                        <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                            My Public Key
                                     </Accordion.Toggle>
                                     </Card.Header>
                                     <Accordion.Collapse eventKey="0">
-                                    <Card.Body>
-                                        <p className="KeyNumber">
-                                            <Copy text={fromAddressInput} />
-                                        </p>
-                                    </Card.Body>
+                                        <Card.Body>
+                                            <p className="KeyNumber">
+                                                <Copy text={fromAddressInput} />
+                                            </p>
+                                        </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
                             </Accordion>
@@ -257,32 +267,32 @@ function Account(props) {
                         <Accordion>
                             <Card>
                                 <Card.Header>
-                                <Accordion.Toggle  as={Button} variant="link" eventKey="0">
-                                    New Transaction
+                                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                        New Transaction
                                 </Accordion.Toggle>
                                 </Card.Header>
                                 <Accordion.Collapse eventKey="0">
-                                <Card.Body>
+                                    <Card.Body>
 
-                                    <Form>
-                                        <Form.Group controlId="textarea">
-                                            <Form.Label>To address<span>*</span></Form.Label>
-                                            <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
-                                            <Form.Text className="text-muted">
-                                                The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
-                                            </Form.Text>
-                                        </Form.Group>
-                                        <Form.Group controlId="textarea">
-                                            <Form.Label>Amount<span>*</span></Form.Label>
-                                            <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
-                                            <Form.Text className="text-muted">
-                                                Amount of money, you would like to send!
+                                        <Form>
+                                            <Form.Group controlId="textarea">
+                                                <Form.Label>To address<span>*</span></Form.Label>
+                                                <Form.Control value={toAddressInput} onChange={(e) => setToAddressInput(e.target.value)} required />
+                                                <Form.Text className="text-muted">
+                                                    The wallet address where you want to send the money to, <strong>enter only valid addresses!</strong>
                                                 </Form.Text>
-                                        </Form.Group>
-                                        <Button onClick={signTransaction}>Send!</Button>
-                                    </Form>
+                                            </Form.Group>
+                                            <Form.Group controlId="textarea">
+                                                <Form.Label>Amount<span>*</span></Form.Label>
+                                                <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                                                <Form.Text className="text-muted">
+                                                    Amount of money, you would like to send!
+                                                </Form.Text>
+                                            </Form.Group>
+                                            <Button onClick={signTransaction}>Send!</Button>
+                                        </Form>
 
-                                </Card.Body>
+                                    </Card.Body>
                                 </Accordion.Collapse>
                             </Card>
                         </Accordion>
@@ -316,24 +326,24 @@ function Account(props) {
                                     <Button >Save options</Button>
                                 </Form>
                                 <br /> */}
-                                <br/>
+                                <br />
                                 <h5>How does mining work?</h5>
-                                <br/>
-                                    <p>
-                                        Once a miner's computer figures out the correct answer, aka missing numbers, 
-                                        a new block is created and added to the blockchain and the winner earns a block reward*. 
+                                <br />
+                                <p>
+                                    Once a miner's computer figures out the correct answer, aka missing numbers,
+                                    a new block is created and added to the blockchain and the winner earns a block reward*.
                                     </p>
-                                    <p>  
-                                        The reward is 1 DCoin and is immediatly added to your balance and shown in your transactions.
-                                    </p>  
-                                    <br/>
-                                    <p> <i>*This is a competition, there is no guarantee that you win DCoins! </i></p>
+                                <p>
+                                    The reward is 1 DCoin and is immediatly added to your balance and shown in your transactions.
+                                    </p>
+                                <br />
+                                <p> <i>*This is a competition, there is no guarantee that you win DCoins! </i></p>
                                 <Alert variant={variant} show={showSuccess}>
                                     {text}
-                                    {variant === "warning" ? (<Loading/>) : null}
+                                    {variant === "warning" ? (<Loading />) : null}
                                 </Alert>
                                 <Button onClick={mineBlock} >Start Mining!</Button>
-                                </div>
+                            </div>
                         </Col>
                     </Row>
                     <Row>
@@ -343,55 +353,56 @@ function Account(props) {
                                     Your Transactions
                                 </h3>
 
-                                    {transactions.map(transaction => {
-                                    return(
-                                    <Card className="TransCard">
-                                        {transaction.fromAdress === fromAddressInput ? (
-                                            <Card.Header className="red">Your transactions </Card.Header>
-                                        ) : (
-                                            <Card.Header className="green">Your transactions </Card.Header>
-                                        )}
-                                        <ListGroup variant="flush">
-                                            <Row>
-                                                <Col md={9} className="TransCol">
+                                {transactions.map(transaction => {
+                                    return (
+                                        <Card className="TransCard">
+                                            {transaction.fromAdress === fromAddressInput ? (
+                                                <Card.Header className="red">Your transactions </Card.Header>
+                                            ) : (
+                                                    <Card.Header className="green">Your transactions </Card.Header>
+                                                )}
+                                            <ListGroup variant="flush">
+                                                <Row>
+                                                    <Col md={9} className="TransCol">
                                                         {transaction.fromAdress === fromAddressInput ? (
                                                             <>
                                                                 <p>To: {transaction.toAddress}</p>
-                                                            
+
                                                             </>
                                                         ) : (
-                                                            <p>From: {transaction.fromAdress}</p>
-                                                        )}
-                                                </Col>
-                                                <Col md={3}>
-                                                    
-                                                        <Moment format="MMMM Do YYYY, HH:mm:ss">{transaction.timestamp}</Moment>
-                                                        
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col md={9}>
-                                                    
-                                                        <p>Hash: {transaction.hash}</p>
-                                                    
-                                                </Col>
-                                                <Col md={3}>
-                                                    
-                                                        <p>Amount: <img src={Icon} alt="DC"/> {transaction.amount} </p>
+                                                                <p>From: {transaction.fromAdress}</p>
+                                                            )}
+                                                    </Col>
+                                                    <Col md={3}>
 
-                                                    
-                                                </Col>
-                                            </Row>
-                                        </ListGroup>
-                                    </Card>
-                                    )})}
+                                                        <Moment format="MMMM Do YYYY, HH:mm:ss">{transaction.timestamp}</Moment>
+
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={9}>
+
+                                                        <p>Hash: {transaction.hash}</p>
+
+                                                    </Col>
+                                                    <Col md={3}>
+
+                                                        <p>Amount: <img src={Icon} alt="DC" /> {transaction.amount} </p>
+
+
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup>
+                                        </Card>
+                                    )
+                                })}
                             </div>
                         </Col>
                     </Row>
-                    
-                    
-                    
-                
+
+
+
+
                 </Col>
             </Row>
         </div>

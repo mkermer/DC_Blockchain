@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/app.action';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './CreateKeys.css';
+import config from '../../config/config';
 
 class Login extends Component {
 
@@ -27,10 +28,10 @@ class Login extends Component {
 
 
         }
-        
+
     }
 
-    
+
 
     setPrivInput = (e) => {
         const loginData = { ...this.state.loginData };
@@ -53,7 +54,7 @@ class Login extends Component {
     authentication = async () => {
 
         try {
-            const res = await axios.post('http://localhost:4000/login/login', this.state.loginData);
+            const res = await axios.post(config.baseUrl + '/login/login', this.state.loginData);
             const response = res.data;
             console.log(response.success)
             if (response.success === true) {
@@ -65,13 +66,13 @@ class Login extends Component {
 
         } catch (err) {
             console.log('Error: ' + err)
-            if(this.state.loginData.privInput === "" || this.state.loginData.walletName ===""){
+            if (this.state.loginData.privInput === "" || this.state.loginData.walletName === "") {
                 this.state.variant = "warning";
                 this.state.text = "Please fill out the fields for your Wallet Name and your Password, DO NOT leave them empty!";
                 this.state.showSuccess = true;
                 console.log(this.state.showSuccess);
                 this.forceUpdate();
-            }else{
+            } else {
                 this.state.variant = "danger";
                 this.state.text = "The username and/or the password you provided was not correct, please try again!";
                 this.state.loginData.privInput = "";
@@ -82,34 +83,35 @@ class Login extends Component {
         }
 
         console.log('hello world')
-        
+
 
     }
 
     changeVisibilty = () => {
-        this.state.visible=!this.state.visible;
+        this.state.visible = !this.state.visible;
         this.forceUpdate();
     }
 
-    
+
 
     showAlert = () => {
         console.log("ShowAlert function")
-        if (this.state.showSuccess === true){
-        return(
-                    <Alert variant={this.state.variant} >
-                        {this.state.text}
-                    </Alert>
-        )}
+        if (this.state.showSuccess === true) {
+            return (
+                <Alert variant={this.state.variant} >
+                    {this.state.text}
+                </Alert>
+            )
+        }
     }
-    
 
-    
-    
+
+
+
 
     render() {
 
-    window.addEventListener('keydown', (event) => {
+        window.addEventListener('keydown', (event) => {
             if (event.isComposing || event.key === "Enter") {
                 this.authentication();
             }
@@ -117,14 +119,14 @@ class Login extends Component {
 
         return (
             <>
-            <div className="keys">
-            </div>
+                <div className="keys">
+                </div>
                 <div className="foreground">
 
-                <h1>Login</h1>
-                <br/>
-                {this.showAlert()}
-                    
+                    <h1>Login</h1>
+                    <br />
+                    {this.showAlert()}
+
                     <Form>
                         <Form.Group controlId="textarea">
                             <Form.Label>Wallet Name<span>*</span></Form.Label>
@@ -136,15 +138,15 @@ class Login extends Component {
 
                         <InputGroup controlId="textarea" className="mb-3">
                             <Form.Label className="labelInputGroup">Private Key<span>*</span></Form.Label>
-                        
+
                             <FormControl
-                                type={this.state.visible ? "text" : "password"} 
-                                value={this.state.loginData.privInput} 
-                                onChange={this.setPrivInput} 
+                                type={this.state.visible ? "text" : "password"}
+                                value={this.state.loginData.privInput}
+                                onChange={this.setPrivInput}
                                 required
                             />
                             <InputGroup.Append>
-                            <Button variant="outline-dark" onClick={this.changeVisibilty}>{this.state.visible ? (<FaEyeSlash/>) : (<FaEye/>)}</Button>
+                                <Button variant="outline-dark" onClick={this.changeVisibilty}>{this.state.visible ? (<FaEyeSlash />) : (<FaEye />)}</Button>
                             </InputGroup.Append>
                         </InputGroup>
 
