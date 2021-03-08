@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/app.action';
 import { useHistory } from 'react-router-dom';
+import config from '../../config/config';
 
 const Dashboard = (props) => {
     const [blocks, setBlocks] = useState([]);
@@ -23,7 +24,7 @@ const Dashboard = (props) => {
     }, [])
 
     const getBlocks = async () => {
-        const response = await axios.get('http://localhost:4000/blocks/getBlocks');
+        const response = await axios.get(config.baseUrl + '/blocks/getBlocks');
         console.log(response.data);
         setBlocks(response.data);
     }
@@ -38,116 +39,111 @@ const Dashboard = (props) => {
 
     return (
         <div className="Dashboard">
-            
+
             <h1>Latest 5 Blocks on DChain</h1>
-            
+
             <div className="divCenter textCenter">
                 <h4 className="heading">Select View:</h4>
-                <Button className="switch" variant="dark" onClick={changeView}><FaCube/> <FaExchangeAlt/> <FaThList/></Button>
+                <Button className="switch" variant="dark" onClick={changeView}><FaCube /> <FaExchangeAlt /> <FaThList /></Button>
             </div>
 
             {view === true && (
                 <>
                     <input type="radio" id="a" label="Front" name="side" />
                     <label for="a">Block</label>
-                    <input type="radio" id="b" label="Front" name="side"/>
+                    <input type="radio" id="b" label="Front" name="side" />
                     <label for="b">Hash</label>
-                    <input type="radio" id="c" label="Front" name="side"/>
+                    <input type="radio" id="c" label="Front" name="side" />
                     <label for="c">Hash of previous Block</label>
-                    <input type="radio" id="d" label="Front" name="side"/>
+                    <input type="radio" id="d" label="Front" name="side" />
                     <label for="d">Nonce</label>
-                    <input type="radio" id="e" label="Front" name="side"/>
+                    <input type="radio" id="e" label="Front" name="side" />
                     <label for="e">Timestamp</label>
-                    <input type="radio" id="f" label="Front" name="side"/>
+                    <input type="radio" id="f" label="Front" name="side" />
                     <label for="f">Transactions</label>
                 </>
             )}
-                
+
             <Row>
 
-            {blocks.map(block => {
-                const showTransactions = () => {
-                    props.actions.storeLatestBlockData(block);
-                    history.push('/transactions');
-                }
-                let contentFront =  <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Block</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p className="value">{block.id}</p>
-                                            </Col>
-                                        </Row>
-                                    </>;
-                let contentRight =  <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Hash</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p className="value">{block.hash}</p>
-                                            </Col>
-                                        </Row>
-                                    </>;
-                let contentBack =   <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Previous Hash</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p className="value">{block.previousHash}</p>
-                                            </Col>
-                                        </Row>
-                                    </>;
-                
-                let contentLeft =   <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Nonce</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p className="value">{block.nonce}</p>
-                                            </Col>
-                                        </Row>
-                                    </>;
-                let contentTop =    <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Timestamp</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p className="time"><Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment></p>
-                                            </Col>
-                                        </Row>
-                                    </>;
-                let contentBottom = <>
-                                        <Row>
-                                            <Col xs={12}>
-                                                <p>Transactions</p>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={12}>
-                                                {/* {show === true ? (
-                                                    <DisplayTransactionsOfBlock transactions={blocks.transactions} />
-                                                ) : null} */}
-                                                {/* <Button size="sm">Show all</Button> */}
-                                                {/* <a href="/transactions" className="time">Show Transactions</a> */}
-                                                <Button className="time" variant="link" onClick={showTransactions}>Show Transactions</Button>
-                                            </Col>
-                                        </Row>
-                                    </>;
+                {blocks.map(block => {
+                    const showTransactions = () => {
+                        props.actions.storeLatestBlockData(block);
+                        history.push('/transactions');
+                    }
+                    let contentFront = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Block</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <p className="value">{block.id}</p>
+                            </Col>
+                        </Row>
+                    </>;
+                    let contentRight = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Hash</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <p className="value">{block.hash}</p>
+                            </Col>
+                        </Row>
+                    </>;
+                    let contentBack = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Previous Hash</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <p className="value">{block.previousHash}</p>
+                            </Col>
+                        </Row>
+                    </>;
+
+                    let contentLeft = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Nonce</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <p className="value">{block.nonce}</p>
+                            </Col>
+                        </Row>
+                    </>;
+                    let contentTop = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Timestamp</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <p className="time"><Moment format="MMMM Do YYYY, HH:mm:ss">{block.timestamp}</Moment></p>
+                            </Col>
+                        </Row>
+                    </>;
+                    let contentBottom = <>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Transactions</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <Button className="time" variant="link" onClick={showTransactions}>Show Transactions</Button>
+                            </Col>
+                        </Row>
+                    </>;
                 
                 return (
                     
@@ -200,17 +196,17 @@ const Dashboard = (props) => {
                         {/* {show === true ? (
                             <DisplayTransactionsOfBlock transactions={blocks.transactions} />
                         ) : null} */}
-                        </Col>
-                        )}
-                    </>
-                )
-            })}
+                                </Col>
+                            )}
+                        </>
+                    )
+                })}
             </Row>
 
-            
-        
 
-    
+
+
+
 
         </div>
     )

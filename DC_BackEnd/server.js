@@ -75,9 +75,7 @@ genesisFunction()
 
 
 
-// Receiving transactions data and sending data to variables
-// MISSING:
-//   1 - Verify if user has enough balance to perform transaction
+
 
 let transA = [];
 let transAHashes = [];
@@ -87,7 +85,7 @@ let transBHashes = [];
 let newTransB = {}
 
 
-//get request for the balance
+
 
 
 
@@ -246,9 +244,7 @@ const merkleTreeHash = (a) => {
     }
 }
 
-// Create block - search for previous blockto get lats block number
-// Create hash, timestamp and merkle tree for new block
-// when 10 min are over this data is compiled and sent for saving
+
 
 const httpServer = require('http').createServer(app);
 
@@ -265,28 +261,15 @@ io.on('connect', (socket) => {
 
 
 let dataToMine = {}
-// block the next user in 10 minutes to mine new blocks 
+
 let serverCreatesTheBlock = false;
-// turns false if user mined the block and creates after that a new block
-
-// MISSING:
-//   1 - Decide what to do with second block block - mining parametters
-// all the transactions in this intervall goes to transB, 
-transB = [...transA];
-transBHashes = [...transAHashes]
-// reset transA 
-transA = [];
-transAHashes = []
 
 
-const secondHash = SHA256('0').toString();
+
+
 
 const myfunc = async (hashParam, nonceParam, transaction, transactionHashes) => {
-    // all the transactions in this intervall goes to transB, 
-    transB = [...transA];
     transBHashes = [...transAHashes]
-    // reset transA 
-    transA = [];
     transAHashes = []
 
     const timestamp = Date.now();
@@ -309,7 +292,7 @@ const myfunc = async (hashParam, nonceParam, transaction, transactionHashes) => 
         transactions: transaction,
         merkleHash: merkleHash,
         transactionsMined: false,
-        transactionHashes: transactionHashes
+        transactionHashes: transBHashes
     }
     const newBlock = new Block(nextBlock);
     newBlock.save();
@@ -476,12 +459,6 @@ io.on("connection", (socket) => {
 
 
             io.emit('hi', userFoundHash);
-
-            //Tell all users that someone has found the
-            // io.emit('Hashfound', userFoundHash)
-
-            //send coins to user that mined - in form of a transaction
-
 
         }
     });
