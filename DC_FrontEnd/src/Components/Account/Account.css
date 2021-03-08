@@ -34,9 +34,7 @@
 
 /* *******************************************AccountCard********************************************** */
 
-.Account .KeyNumber{
-    word-break:break-all;
-}
+
 
 .Account .AccountCard{
     box-shadow: 1px 1px 5px 5px rgb(214, 214, 214);

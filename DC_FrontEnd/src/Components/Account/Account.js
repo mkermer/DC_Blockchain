@@ -465,7 +465,17 @@ function Account(props) {
                                             <Card.Header className="green">
                                                 <Row className="header">
                                                     <Col md={10} className="Colhead">
-                                                        <p className="KeyNumber inline">From: {shortKey}</p>
+
+                                                    {(transaction.fromAdress === "DCWallet") ?
+                                                        (     
+                                                            <p className="DCWallet">
+                                                                From: 
+                                                                <span> DC</span>
+                                                                <span>Wallet</span>
+                                                            </p>
+                                                        ) :  <p className="KeyNumber inline">From: {shortKey}</p>
+                                                    }
+                                                    
 
                                                         {shortKey.length > 10 ? (
                                                             <>
@@ -478,8 +488,13 @@ function Account(props) {
                                                                     onClick={() => setOpen(!open)}
                                                                     aria-controls="long-key"
                                                                     aria-expanded={open}
+                                                                    variant="link"
+                                                                    style={{width: "30px", margin:"0", padding: "0 0 10px 0"}}
                                                                 >
-                                                                    click
+                                                                    {open === true ? (
+                                                                        <FaCaretUp/>
+                                                                    ): (<FaCaretDown/>)}
+                                                                    
                                                                 </Button>
                                                             </>
                                                             ): null}
