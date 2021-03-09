@@ -13,7 +13,10 @@ const createUser = async (req, res) => {
 
     try {
         const jwt = user.generateJWT();
+        console.warn('user jwt generated!');
         await user.save();
+
+        console.warn('user saved!');
 
         return res.status(201).json({
             success: true,
