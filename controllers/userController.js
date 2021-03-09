@@ -26,6 +26,7 @@ const createUser = async (req, res) => {
             },
         });
     } catch (error) {
+        console.error(JSON.stringify(error))
         return res.status(400).json({
             error,
             message: "Account not created!",
