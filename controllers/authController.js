@@ -19,7 +19,7 @@ const handleSignIn = async (req, res) => {
             publicKey: user.publicKey,
             balance: user.balance,
         },
-        token: user.generateJWT(),
+        token: "1234" //user.generateJWT(),
     });
 };
 module.exports = handleSignIn;
