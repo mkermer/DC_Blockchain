@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import  { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion, Collapse } from 'react-bootstrap';
+import { Button, Form, Alert, Card, ListGroup, Row, Col, Accordion, Collapse } from 'react-bootstrap';
 import Transaction from './transaction_class';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -70,12 +70,13 @@ function Account(props) {
 
             }
 
-            console.log(thisTransaction);
+            // console.log(props.applicationState.user);
+            // console.log(thisTransaction);
             const transres = await axios.post(config.baseUrl + `/blocks/update/${fromAddressInput}`, thisTransaction);
-            console.log(transres.data);
+            // console.log(transres.data);
             const trans = transres.data;
             if (trans !== 'The deposit address is not stored on our blockchain!') {
-                const response = await axios.get(config.baseUrl + `/users/${props.applicationState.user._id}`);
+                const response = await axios.post(config.baseUrl + `/users/update/${props.applicationState.user.publicKey}`);
                 console.log(response.data);
                 const user = response.data;
                 props.actions.storeUserData(user);
@@ -118,19 +119,18 @@ function Account(props) {
             console.log(arg);
             setRewardedUser(arg);
 
-            const response = await axios.get(config.baseUrl + `/users/${props.applicationState.user._id}`);
-            console.log(response.data);
-            const user = response.data;
-            props.actions.storeUserData(user);
         })
 
-        socket.on('miningSuccess', (arg) => {
+        socket.on('miningSuccess', async (arg) => {
             console.log(arg);
 
-            setBalance(arg);
+            const user = arg;
+            setBalance(user.balance)
 
+            props.actions.storeUserData(user);
 
         })
+
 
         socket.off('connect', () => {
             console.log(`I'm connected with the back-end`);
@@ -237,10 +237,10 @@ function Account(props) {
 
     const keyExpand = (fromAdress, shortKey, longKey) => {
         
-        for (let i = 0; i < 10 ; i++){
+        for (let i = 0; i < 10; i++) {
             shortKey.push(fromAdress[i])
         }
-        for (let j = 10; j < fromAdress.length ; j++){
+        for (let j = 10; j < fromAdress.length ; j++) {
             longKey.push(fromAdress[j])
         }
     }
@@ -248,7 +248,7 @@ function Account(props) {
     const day = (timestamp) => {
         let today = moment().format('DDMMYYYY');
         let transTimestamp = moment(timestamp).format('DDMMYYYY')
-        if (transTimestamp === today){
+        if (transTimestamp === today) {
             return true;
         } else {
             return false;
@@ -259,7 +259,7 @@ function Account(props) {
         let week = moment().format('wYYYY');
         let transTimestamp = moment(timestamp).format('wYYYY')
         console.log(transTimestamp)
-        if (transTimestamp === week){
+        if (transTimestamp === week) {
             return true;
         } else {
             return false;
@@ -269,7 +269,7 @@ function Account(props) {
     const month = (timestamp) => {
         let month = moment().format('MMYYYY');
         let transTimestamp = moment(timestamp).format('MMYYYY')
-        if (transTimestamp === month){
+        if (transTimestamp === month) {
             return true;
         } else {
             return false;
@@ -358,13 +358,7 @@ function Account(props) {
                                                 Amount of money, you would like to send!
                                                 </Form.Text>
                                             </Form.Group>
-                                            <Form.Group controlId="textarea">
-                                                <Form.Label>Amount<span>*</span></Form.Label>
-                                                <Form.Control value={amount} onChange={(e) => setAmount(e.target.value)} required />
-                                                <Form.Text className="text-muted">
-                                                    Amount of money, you would like to send!
-                                                </Form.Text>
-                                            </Form.Group>
+                                            
                                             <Button onClick={signTransaction}>Send!</Button>
                                         </Form>
 
@@ -544,7 +538,9 @@ function Account(props) {
                                             </Row>
                                         </ListGroup>
                                     </Card>
-                                    )}})}
+                                    )
+                                }
+                                })}
                             </div>
                         </Col>
                     </Row>
