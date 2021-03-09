@@ -12,7 +12,7 @@ const createUser = async (req, res) => {
     user.setPrivateKey(body.privateKey);
 
     try {
-        const jwt = "12345";// user.generateJWT();
+        const jwt = user.generateJWT();
         console.error('user jwt generated!');
         await user.save();
 
